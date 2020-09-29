@@ -1,3 +1,0 @@
-DVPattern
-
-Position noise is one of the common nodes in CG compositing. DVPattern is also doing the same thing in deep, has 7 different patterns. They are : fBm, turbulence, noise, random, stripes, ripple and rays.

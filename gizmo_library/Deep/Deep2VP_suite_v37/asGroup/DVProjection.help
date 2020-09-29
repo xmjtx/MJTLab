@@ -1,3 +1,0 @@
-DVProjection
-
-This node will do projection from deep. It can be used with the current shot camera, or place the camera manually. Output of this node is 2D image, so it doesn’t need ‘DeepToImage’ or ‘DVPToImage in downstream. On the other hand, the deep data will lose after this node.
