@@ -1,6 +1,0 @@
-DVPmatte
-
-Position matte is very common in CG compositing. DVPmatte is same as position matte but with deep in real 3D space. It is taking advantage of using deep to get real z matte and separate non-filtered deep samples and
-pixel filter in alpha. In 3.5, this tool also can combine with multiple matte with different operation, so it can generate more shape than just sphere, cube and cylinder shape.
-This tool has 4 different ways to sample the position where you want to apply. 2D sample, transform preview geo in 3D, link selected axis
-and import chan file.
