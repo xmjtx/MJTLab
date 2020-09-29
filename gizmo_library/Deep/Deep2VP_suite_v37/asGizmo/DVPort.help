@@ -1,0 +1,7 @@
+DVPort
+
+This node will centralize the camera data in one place. Due to the limitation in TCL and speed in python, I choose expression link to camera in this toolset. But one of the requests is get camera input for the tool instead of link with expression. The concern is when the camera node changed, all the Deep2VP nodes need to re-link again. So the purpose of this node is centralize all the camera data in this node, and set link to this node instead. So when the camera change, just feed in the new camera to this node.
+
+The camera can stack with axis nodes, the toolset will only gather world matrix for any camera transformation. Shouldn’t put any nodes between camera and this node. It’s because it used ‘input.xxxxx’ TCL to fill up the camera information.
+
+* I don’t use [topnode] because concern axis stack. ‘KnobChanged’ on parent node will slow down the nuke script.

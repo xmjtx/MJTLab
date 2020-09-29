@@ -1,0 +1,16 @@
+streamCart
+
+Select channel or geo and quickly shuffle it.
+
+How to use (channel shuffle) :
+- connect streamCart node to anywhere of the tree.
+- click 'get channels / geo'. It will scan through available channels from upstream
+- click the channels to create shuffle node
+
+How to use (Geo select) :
+- connect streamCart node directly to 'ReadGeo'
+- click 'get channels / geo'. It will scan through avaliable geo mesh from upstream 'scene_view'
+- select all the individual objects
+- click 'ReadGeo Checkout' to create a new ReadGeo with the selection.
+
+* This tool support 2D, Deep and 'ReadGeo' from upstream.

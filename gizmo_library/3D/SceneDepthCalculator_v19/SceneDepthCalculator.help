@@ -1,0 +1,7 @@
+SceneDepthCalculator
+
+Calculate the depth distance between animated or non-animated axis/geo and camera. It is useful for any depth setup and make it automatic, such as creating rack focus, DOF on moving object, DeepCrop, create holdout in Deep, clip zdepth pass, analyze the depth for the shot to drive any 2D setup in template, etc.
+
+How to use :
+https://vimeo.com/309033461
+https://www.facebook.com/MJTlab/videos/2330503703848374/

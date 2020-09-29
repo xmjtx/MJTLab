@@ -1,0 +1,3 @@
+DVPsetLight
+
+This node needs to go before DVPrelight. Setup how the normal data use in deep for relight. This node will provide 4 options to pipe in normal data into deep stream.
