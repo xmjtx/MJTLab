@@ -1,0 +1,13 @@
+origami
+
+Initial intention of 'Origami' is a *just for fun* tool. Since the tool involved many setup. Then I start to build it for practical usage. It helps to build geo patch for scatter objects or form a new UV, re-build a messy wireframe photoscan geo, clone a high-end geo to low-end geo for patch or 3D reference, and also able to create interact animation. v1.2 added tangent for geo smoothness.
+
+Share one of the experience, worked on a geo, the UV on the geo doesn't achieve what I want to do because of the UV assigned to another tile. So I use origami to rebuild part of the geo, so I can get the same shape of the geo but new UV from a card. This is pretty handy when try to fix UV on a geo in comp.
+
+How to use :
+
+better to check video
+https://www.facebook.com/MJTlab/videos/527711171052558/
+https://vimeo.com/318138533
+
+Basically, create target set from the original geo, then deform a new geo to the target set. So you can get same geo shape, or create interaction between multiple geo.

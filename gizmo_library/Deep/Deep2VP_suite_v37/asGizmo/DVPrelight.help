@@ -1,0 +1,3 @@
+DVPrelight
+
+Output of this node is raw light in deep format. So user can use this raw light output, or connect to ‘DVPScene’ to light it with beauty. ‘DVPrelight’ node can be stack with multiple nodes for multiple lights. The setting in this node is almost same as nuke basic light node, but with extra exponential falloff type, to get a flexible result.

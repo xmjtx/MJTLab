@@ -1,0 +1,3 @@
+DVPToImage
+
+This node helps to output ‘deepPosition’ and ‘deepNormal’ channel to 2D. Due to 3D data supposed to be non-filtered data, all transparent, semi-transparent and filtered pixel will be fixed to raw non-filter 3D data. That is regular ‘DeepToImage’ cannot do. If use these 3D data channels in 2D, required this node to process.
