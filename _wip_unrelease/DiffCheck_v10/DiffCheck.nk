@@ -1,0 +1,50 @@
+Group {
+ name DiffCheck
+ tile_color 0x191919ff
+ note_font Verdana
+ addUserKnob {20 tab_general l General}
+ addUserKnob {3 decimal}
+ decimal 6
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 1.0}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-08-05}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.0<br>-&nbsp;check&nbsp;pixel&nbsp;differences\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ Input {
+  inputs 0
+  name Input2
+  xpos 575
+  ypos 391
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input1
+  xpos 377
+  ypos 389
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 nR
+  temp_expr0 "int( (Br-Ar)*pow(10,\[value parent.decimal]) ) / pow(10,1/\[value parent.decimal])"
+  temp_name1 nG
+  temp_expr1 "int( (Bg-Ag)*pow(10,\[value parent.decimal]) ) / pow(10,1/\[value parent.decimal])"
+  temp_name2 nB
+  temp_expr2 "int( (Bb-Ab)*pow(10,\[value parent.decimal]) ) / pow(10,1/\[value parent.decimal])"
+  temp_name3 nA
+  temp_expr3 "int( (Ba-Aa)*pow(10,\[value parent.decimal]) ) / pow(10,1/\[value parent.decimal])"
+  expr0 "nR != 0 ? 1 : 0"
+  expr1 "nG != 0 ? 1 : 0"
+  expr2 "nB != 0 ? 1 : 0"
+  expr3 "nA != 0 ? 1 : 0"
+  name MergeExpression1
+  xpos 464
+  ypos 481
+ }
+ Output {
+  name Output1
+  xpos 464
+  ypos 607
+ }
+end_group

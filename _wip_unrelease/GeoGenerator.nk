@@ -1,0 +1,441 @@
+Group {
+ inputs 0
+ name GeoGenerator
+ onCreate "\nthisGRP = nuke.thisGroup()\nif not thisGRP\['disable_error'].getValue() :\n    import os\n    import re\n\n    fontpath = re.split( '/|\"\"' , nuke.EXE_PATH )\n    fontpath.pop()\n    fontpath += \['plugins','fonts']\n    \n    if os.path.isfile( '/'.join( fontpath + \['UtopiaBold.pfa'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['UtopiaBold.pfa'] ) )\n    elif os.path.isfile( '/'.join( fontpath + \['CourierBold.pfa'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['CourierBold.pfa'] ) )\n    elif os.path.isfile( '/'.join( fontpath + \['Courier10PitchBold.pfb'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['Courier10PitchBold.pfb'] ) )\n    else :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['BitstreamCharterBold.pfb'] ) )\n"
+ tile_color 0x7f7fff
+ addUserKnob {20 ggSetup l Setup}
+ addUserKnob {26 initialBuilder l "Initial Setup"}
+ addUserKnob {41 geoType l "Geo Type" T menu_geo.geoType}
+ addUserKnob {2 file +DISABLED}
+ addUserKnob {3 cloneCount l "Number of Clone"}
+ cloneCount 5
+ addUserKnob {41 addBD l "use Blur/Defocus :" T menu_blur.addBD}
+ addUserKnob {4 BD_select l Node -STARTLINE +DISABLED M {Blur Defocus ""}}
+ addUserKnob {6 addBlendMat l "use BlendMat" +STARTLINE}
+ addUserKnob {6 addProj3D l "use Project3D" +STARTLINE}
+ addUserKnob {6 addProcNoise l "use ProceduralNoise" +STARTLINE}
+ addUserKnob {6 addCamInput l "add Face to Camera Input" +STARTLINE}
+ addUserKnob {26 textureInput l "Texture Input"}
+ addUserKnob {41 inputTimingType l "Input Timing Type" T menu_texture.inputTimingType}
+ addUserKnob {4 inputOrder l "Input Order" +DISABLED M {Constant Step Random}}
+ addUserKnob {26 ""}
+ addUserKnob {22 Generate T "thisGRP = nuke.thisGroup()\n\nthisXPOS = thisGRP.xpos()\nthisYPOS = thisGRP.ypos()\n\n### gather setting ###\n\ngeoType = thisGRP\['geoType'].getValue()\nif geoType == 4 :\n\tcustomGeoPath = thisGRP\['file'].getValue()\ncloneCount = thisGRP\['cloneCount'].getValue()\naddBD = thisGRP\['addBD'].getValue()\n\nif addBD == 1 :\n\tBD_select = thisGRP\['BD_select'].getValue()\n\naddBlendMat = thisGRP\['addBlendMat'].getValue()\naddProj3D = thisGRP\['addProj3D'].getValue()\naddProcGeo = thisGRP\['addProcNoise'].getValue()\naddCamInput = thisGRP\['addCamInput'].getValue()\ninputTimingType = thisGRP\['inputTimingType'].getValue()\n\nif inputTimingType != 0 :\n\tinputOrder = thisGRP\['inputOrder'].getValue()\n\n### prepare setting ###\n\ntxtList = \[]\nunpremultList = \[]\nmultList = \[]\npremultList = \[]\nclampList = \[]\nbdList = \[]\nblendmatList =\[]\nproj3dList =\[]\ngeoList = \[]\nprocgeoList = \[]\ntransgeoList = \[]\naxisList = \[]\nmiscList = \[]\n\ngoStore = nuke.toNode('store')\ngoStore\['generalFN'].execute()\ngoStore\['textureFN'].execute()\n\nggLevel = getLevel()\n\ngoStore\['geoKnobsFN'].execute()\nif geoType == 0 :\n\tgeoFocus('card')\nif geoType == 1 :\n\tgeoFocus('sphere')\nif geoType == 2 :\n\tgeoFocus('cube')\nif geoType == 3 :\n\tgeoFocus('cylinder')\nif geoType == 4 :\n\tgeoFocus('readgeo')\n\nrandomName = randomName()\n\n### start ###\n\nwith ggLevel :\n\tdotStart = nuke.nodes.Dot(name='dot_start_' + randomName, label='IMAGE INPUT', note_font='Bold')\n\tdotStart.setXpos(thisXPOS+500)\n\tdotStart.setYpos(thisYPOS)\n\tmiscList.append(dotStart.name())\n\n\tdotSpacer01 = nuke.nodes.Dot(name='dot_spacer01_' + randomName)\n\tmiscList.append(dotSpacer01.name())\n\n\tdotSpacer01.setInput(0, dotStart)\n\n\tendMerge = nuke.nodes.MergeGeo(name='GG_MergeGeo_' + randomName, xpos=thisXPOS+500, ypos=thisYPOS+1400)\n\tendMerge\['display'].setExpression('\{0\}.ggdisplay'.format(thisGRP.name()))\n\tendMerge\['selectable'].setExpression('\{0\}.ggselectable'.format(thisGRP.name()))\n\tendMerge\['render'].setExpression('\{0\}.ggrender'.format(thisGRP.name()))\n\tmiscList.append(endMerge.name())\n\n\t### start build clone ###\n\tfor clone in range (0, int(cloneCount)) :\n\n\t\t### texture ###\n\t\tif inputTimingType != 0 :\n\t\t\tif inputTimingType == 1 :\n\t\t\t\tcloneText = nuke.nodes.FrameHold(name='GG_Framehold' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\t\tif inputOrder == 0 :\n\t\t\t\t\tcloneText\['first_frame'].setExpression('\{0\}.txtinput_constant_hold'.format(thisGRP.name()))\n\t\t\t\t\ttextureOrder('constant')\n\t\t\t\tif inputOrder == 1 :\n\t\t\t\t\tcloneText\['first_frame'].setExpression('\{0\}.txtinput_first_frame+(\{1\}*\{0\}.txtinput_step_interval)'.format(thisGRP.name(), clone))\n\t\t\t\t\ttextureOrder('step')\n\t\t\t\tif inputOrder == 2 :\n\t\t\t\t\tcloneText\['first_frame'].setExpression('\{0\}.txtinput_first_frame + int(((\{0\}.txtinput_last_frame - \{0\}.txtinput_first_frame)+1)*random(\{0\}.txtinput_random_seed, \{1\}))'.format(thisGRP.name(), clone))\n\t\t\t\t\ttextureOrder('random')\n\n\t\t\tif inputTimingType == 2 :\n\t\t\t\tcloneText = nuke.nodes.TimeOffset(name='GG_Timeoffset' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\t\tif inputOrder == 1 :\n\t\t\t\t\tcloneText\['time_offset'].setExpression('\{1\}*\{0\}.txtinput_step_interval'.format(thisGRP.name(), clone))\n\t\t\t\t\ttextureOrder('step')\n\t\t\t\tif inputOrder == 2 :\n\t\t\t\t\tcloneText\['time_offset'].setExpression('int((((\{0\}.txtinput_last_frame - \{0\}.txtinput_first_frame)*\{0\}.txtinput_random_mult)+1)*random(\{0\}.txtinput_random_seed, \{1\}))'.format(thisGRP.name(), clone))\n\t\t\t\t\ttextureOrder('random')\n\n\t\t\ttxtList.append(cloneText.name())\n\t\t\tcloneText.setInput(0, dotSpacer01)\n\t\telse :\n\t\t\ttextureOrder('none')\n\n\t\t### unpremult ###\n\t\tcloneUnpremult = nuke.nodes.Unpremult(name='GG_Unpremult' + randomName + '_\{0:04d\}'.format(clone))\n\t\tunpremultList.append(cloneUnpremult.name())\n\n\t\tif inputTimingType == 0 :\n\t\t\tcloneUnpremult.setInput(0, dotSpacer01)\n\t\telse :\n\t\t\tcloneUnpremult.setInput(0, cloneText)\n\n\t\t### multiply ###\n\t\tcloneMult = nuke.nodes.Multiply(name='GG_Multiply' + randomName + '_\{0:04d\}'.format(clone))\n\t\tmultList.append(cloneMult.name())\n\t\tcloneMult.setInput(0, cloneUnpremult)\n\n\t\t### premult ###\n\t\tclonePremult = nuke.nodes.Premult(name='GG_Premult' + randomName + '_\{0:04d\}'.format(clone))\n\t\tpremultList.append(clonePremult.name())\n\t\tclonePremult.setInput(0, cloneMult)\n\n\t\t### clamp ###\n\t\tcloneClamp = nuke.nodes.Clamp(name='GG_Clamp' + randomName + '_\{0:04d\}'.format(clone))\n\t\tcloneClamp\['disable'].setExpression('\{0\}.falloff_clamp'.format(thisGRP.name()))\n\t\tclampList.append(cloneClamp.name())\n\t\tcloneClamp.setInput(0, clonePremult)\n\n\t\t### blur/defocus ###\n\t\tif addBD == 1 :\n\t\t\tif BD_select == 0 :\n\t\t\t\tcloneBD = nuke.nodes.Blur(name='GG_Blur' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\t\tcloneBD\['size'].setExpression('\{0\}.soft_type==0?\{0\}.soft_value:\{0\}.soft_value*(1+\{1\})'.format(thisGRP.name(),clone))\n\t\t\telse :\n\t\t\t\tcloneBD = nuke.nodes.Defocus(name='GG_Defocus' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\t\tcloneBD\['defocus'].setExpression('\{0\}.soft_type==0?\{0\}.soft_value:\{0\}.soft_value*\{1\}'.format(thisGRP.name(),clone))\n\t\t\tbdList.append(cloneBD.name())\n\t\t\tcloneBD.setInput(0, cloneClamp)\n\n\t\t### BlendMat ###\n\t\tif addBlendMat == 1 :\n\t\t\tcloneBlendMat = nuke.nodes.BlendMat(name='GG_BlendMat' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneBlendMat\['operation'].setExpression('\{0\}.blendmat_operation'.format(thisGRP.name()))\n\t\t\tcloneBlendMat\['surfaceblend'].setExpression('\{0\}.blendmat_surfaceblend'.format(thisGRP.name()))\n\t\t\tblendmatList.append(cloneBlendMat.name())\n\t\t\tif addBD == 1 :\n\t\t\t\tcloneBlendMat.setInput(0, cloneBD)\n\t\t\telse :\n\t\t\t\tcloneBlendMat.setInput(0, cloneClamp)\n\n\t\t### project3D ###\n\t\tif addProj3D == 1 :\n\t\t\tcloneProj3D = nuke.nodes.Project3D(name='GG_Project3D' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneProj3D\['project_on'].setExpression('\{0\}.proj3d_project_on'.format(thisGRP.name()))\n\t\t\tcloneProj3D\['occlusion_mode'].setExpression('\{0\}.proj3d_occlusion_mode'.format(thisGRP.name()))\n\t\t\tcloneProj3D\['crop'].setExpression(\"\{0\}.proj3d_crop\".format(thisGRP.name()))\n\t\t\tproj3dList.append(cloneProj3D.name())\n\t\t\tif addBD == 1 :\n\t\t\t\tif addBlendMat == 1 :\n\t\t\t\t\tcloneProj3D.setInput(0, cloneBlendMat)\n\t\t\t\telse :\n\t\t\t\t\tcloneProj3D.setInput(0, cloneBD)\n\t\t\telse :\n\t\t\t\tif addBlendMat == 1 :\n\t\t\t\t\tcloneProj3D.setInput(0, cloneBlendMat)\n\t\t\t\telse :\n\t\t\t\t\tcloneProj3D.setInput(0, cloneClamp)\n\n\t\t\tif clone == 0 :\n\t\t\t\tprojCamConnect = nuke.nodes.Dot(name='dot_projCam' + randomName, label='PROJ CAMERA INPUT', note_font='Bold')\n\t\t\t\tprojCamConnect.setXpos(thisXPOS+250)\n\t\t\t\tprojCamConnect.setYpos(thisYPOS+400)\n\t\t\t\tmiscList.append(projCamConnect.name())\n\n\t\t\tcloneProj3D.setInput(1, projCamConnect)\n\n\t\t### Geo ###\n\t\tif geoType == 0 :\n\t\t\tcloneGeo = nuke.nodes.Card(name='GG_Card' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneGeo\['image_aspect'].setExpression('\{0\}.image_aspect_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['orientation'].setExpression('\{0\}.orientation_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['rows'].setExpression('\{0\}.rows_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['columns'].setExpression('\{0\}.columns_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['z'].setExpression('\{0\}.z_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['lens_in_focal'].setExpression('\{0\}.lens_in_focal_card'.format(thisGRP.name()))\n\t\t\tcloneGeo\['lens_in_haperture'].setExpression('\{0\}.lens_in_haperture_card'.format(thisGRP.name()))\n\t\tif geoType == 1 :\n\t\t\tcloneGeo = nuke.nodes.Sphere(name='GG_Sphere' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneGeo\['rows'].setExpression('\{0\}.rows_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['columns'].setExpression('\{0\}.columns_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['radius'].setExpression('\{0\}.radius_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['u_extent'].setExpression('\{0\}.u_extent_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['v_extent'].setExpression('\{0\}.v_extent_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['close_top'].setExpression('\{0\}.close_top_sphere'.format(thisGRP.name()))\n\t\t\tcloneGeo\['close_bottom'].setExpression('\{0\}.close_bottom_sphere'.format(thisGRP.name()))\n\t\tif geoType == 2 :\n\t\t\tcloneGeo = nuke.nodes.Cube(name='GG_Cube' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneGeo\['rows'].setExpression('\{0\}.rows_cube'.format(thisGRP.name()))\n\t\t\tcloneGeo\['columns'].setExpression('\{0\}.columns_cube'.format(thisGRP.name()))\n\t\t\tcloneGeo\['separate_faces'].setExpression('\{0\}.separate_faces_cube'.format(thisGRP.name()))\n\t\t\tcloneGeo\['cube'].setExpression('\{0\}.cube_cube'.format(thisGRP.name()))\n\t\tif geoType == 3 :\n\t\t\tcloneGeo = nuke.nodes.Cylinder(name='GG_Cylinder' + randomName + '_\{0:04d\}'.format(clone))\n\t\t\tcloneGeo\['rows'].setExpression('\{0\}.rows_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['columns'].setExpression('\{0\}.columns_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['radius'].setExpression('\{0\}.radius_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['height'].setExpression('\{0\}.height_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['u_extent'].setExpression('\{0\}.u_extent_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['close_top'].setExpression('\{0\}.close_top_cylinder'.format(thisGRP.name()))\n\t\t\tcloneGeo\['close_bottom'].setExpression('\{0\}.close_bottom_cylinder'.format(thisGRP.name()))\n\t\tif geoType == 4 :\n\t\t\tcloneGeo = nuke.createNode('ReadGeo2', 'file \{' + customGeoPath + '\}')\n\t\t\tcloneGeo\['range_first'].setExpression('\{0\}.range_first_readgeo'.format(thisGRP.name()))\n\t\t\tcloneGeo\['range_last'].setExpression('\{0\}.range_last_readgeo'.format(thisGRP.name()))\n\t\t\tcloneGeo.hideControlPanel()\n\n\t\t\tif len(customGeoPath) != 0 :\n\t\t\t\tsceneView = cloneGeo\['scene_view'] \n\t\t\t\tallItems = sceneView.getAllItems()\n\t\t\t\tsceneView.setImportedItems(allItems)\n\t\t\t\tsceneView.setSelectedItems(allItems)\n\t\t\tcloneGeo.setName('GG_ReadGeo' + randomName + '_\{0:04d\}'.format(clone))\n\n\t\t\tif addBD == 1 :\n\t\t\t\tif addBlendMat == 1 :\n\t\t\t\t\tif addProj3D == 1 :\n\t\t\t\t\t\tcloneGeo\['xpos'].setValue(cloneProj3D\['xpos'].getValue())\n\t\t\t\t\telse :\n\t\t\t\t\t\tcloneGeo\['xpos'].setValue(cloneBlendMat\['xpos'].getValue())\n\t\t\t\telse :\n\t\t\t\t\tcloneGeo\['xpos'].setValue(cloneBD\['xpos'].getValue())\n\t\t\telse :\n\t\t\t\tcloneGeo\['xpos'].setValue(cloneClamp\['xpos'].getValue())\n\n\n\t\tgeoList.append(cloneGeo.name())\n\n\t\tif addBD == 1 :\n\t\t\tif addBlendMat == 1 :\n\t\t\t\tif addProj3D == 1 :\n\t\t\t\t\tcloneGeo.setInput(0, cloneProj3D)\n\t\t\t\telse :\n\t\t\t\t\tcloneGeo.setInput(0, cloneBlendMat)\n\t\t\telse :\n\t\t\t\tif addProj3D == 1 :\n\t\t\t\t\tcloneGeo.setInput(0, cloneProj3D)\n\t\t\t\telse :\n\t\t\t\t\tcloneGeo.setInput(0, cloneBD)\n\t\telse :\n\t\t\tif addBlendMat == 1 :\n\t\t\t\tif addProj3D == 1 :\n\t\t\t\t\tcloneGeo.setInput(0, cloneProj3D)\n\t\t\t\telse :\n\t\t\t\t\tcloneGeo.setInput(0, cloneBlendMat)\n\t\t\telse :\n\t\t\t\tif addProj3D == 1 :\n\t\t\t\t\tcloneGeo.setInput(0, cloneProj3D)\n\t\t\t\telse :\n\t\t\t\t\tcloneGeo.setInput(0, cloneClamp)\n\n\t\t### procedure noise ###\n\t\tif addProcGeo == 1 :\n\t\t\tcloneProcGeo = nuke.nodes.ProcGeo(name='GG_ProcGeo' + randomName + '_\{0:04d\}'.format(clone))\n\n\t\t\tcloneProcGeo\['mode'].setExpression('\{0\}.procgeo_mode'.format(thisGRP.name()))\n\t\t\tcloneProcGeo\['orient'].setExpression('\{0\}.procgeo_orient'.format(thisGRP.name()))\n\t\t\tcloneProcGeo\['x_size'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_x_size:\{0\}.procgeo_var==1?\{0\}.procgeo_x_size+(\{0\}.procgeo_offset_x_size*\{1\}):\{0\}.procgeo_x_size+(\{0\}.procgeo_offset_x_size*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_x_size))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['x_offset'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_x_offset:\{0\}.procgeo_var==1?\{0\}.procgeo_x_offset+(\{0\}.procgeo_offset_x_offset*\{1\}):\{0\}.procgeo_x_offset+(\{0\}.procgeo_offset_x_offset*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_x_offset))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['y_size'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_y_size:\{0\}.procgeo_var==1?\{0\}.procgeo_y_size+(\{0\}.procgeo_offset_y_size*\{1\}):\{0\}.procgeo_y_size+(\{0\}.procgeo_offset_y_size*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_y_size))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['y_offset'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_y_offset:\{0\}.procgeo_var==1?\{0\}.procgeo_y_offset+(\{0\}.procgeo_offset_y_offset*\{1\}):\{0\}.procgeo_y_offset+(\{0\}.procgeo_offset_y_offset*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_y_offset))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['Octaves'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_Octaves:\{0\}.procgeo_var==1?\{0\}.procgeo_Octaves+(\{0\}.procgeo_offset_Octaves*\{1\}):\{0\}.procgeo_Octaves+(\{0\}.procgeo_offset_Octaves*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_Octaves))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['Lacunarity'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_Lacunarity:\{0\}.procgeo_var==1?\{0\}.procgeo_Lacunarity+(\{0\}.procgeo_offset_Lacunarity*\{1\}):\{0\}.procgeo_Lacunarity+(\{0\}.procgeo_offset_Lacunarity*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_Lacunarity))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['Gain'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_Gain:\{0\}.procgeo_var==1?\{0\}.procgeo_Gain+(\{0\}.procgeo_offset_Gain*\{1\}):\{0\}.procgeo_Gain+(\{0\}.procgeo_offset_Gain*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_Gain))\".format(thisGRP.name(), clone))\n\t\t\tcloneProcGeo\['Speed'].setExpression(\"\{0\}.procgeo_var==0?\{0\}.procgeo_Speed:\{0\}.procgeo_var==1?\{0\}.procgeo_Speed+(\{0\}.procgeo_offset_Speed*\{1\}):\{0\}.procgeo_Speed+(\{0\}.procgeo_offset_Speed*random(\{0\}.procgeo_seed, \{1\}*\{0\}.procgeo_offset_Speed))\".format(thisGRP.name(), clone))\n\n\t\t\tprocgeoList.append(cloneProcGeo.name())\n\t\t\tcloneProcGeo.setInput(0, cloneGeo)\n\n\t\t### transform geo ###\n\t\tcloneTransGeo = nuke.nodes.TransformGeo(name='GG_TransformGeo' + randomName + '_\{0:04d\}'.format(clone))\n\t\ttransgeoList.append(cloneTransGeo.name())\n\n\t\tif addProcGeo == 1 :\n\t\t\tcloneTransGeo.setInput(0, cloneProcGeo)\n\t\telse :\n\t\t\tcloneTransGeo.setInput(0, cloneGeo)\n\n\t\t### axis ###\n\t\tcloneAxis = nuke.nodes.Axis(name='GG_Axis' + randomName + '_\{0:04d\}'.format(clone))\n\n\t\tcloneAxis\['display'].setExpression('\{0\}.axdisplay'.format(thisGRP.name()))\n\t\tcloneAxis\['selectable'].setExpression('\{0\}.axselectable'.format(thisGRP.name()))\n\n\t\tcloneAxis\['translate'].setExpression('\{0\}.offsetType==0? \{0\}.translate_parent+(\{0\}.translate_offset_child*\{1\}) : \{0\}.offsetType==1? \{0\}.translate_parent+((random(\{0\}.offsetType_seed, \{1\})-0.5)*\{0\}.translate_offset_child) : \{0\}.translate_parent+(((random(\{0\}.offsetType_seed, \{1\}*\{0\}.translate_offset_child)-0.5)*\{0\}.translate_offset_child*\{1\}))'.format(thisGRP.name(),clone))\n\t\tcloneAxis\['rotate'].setExpression('\{0\}.offsetType==0? \{0\}.rotate_parent+(\{0\}.rotate_offset_child*\{1\}) : \{0\}.offsetType==1? \{0\}.rotate_parent+((random(\{0\}.offsetType_seed, \{1\})-0.5)*\{0\}.rotate_offset_child) : \{0\}.rotate_parent+(((random(\{0\}.offsetType_seed, \{1\}*\{0\}.rotate_offset_child)-0.5)*\{0\}.rotate_offset_child*\{1\}))'.format(thisGRP.name(),clone))\n\t\tcloneAxis\['scaling'].setExpression('\{0\}.offsetType==0? \{0\}.scaling_parent+(\{0\}.scaling_offset_child*\{1\}) : \{0\}.offsetType==1? \{0\}.scaling_parent+(random(\{0\}.offsetType_seed, \{1\})*\{0\}.scaling_offset_child) : \{0\}.scaling_parent+((random(\{0\}.offsetType_seed, \{1\}*\{0\}.scaling_offset_child)*\{0\}.scaling_offset_child*\{1\}))'.format(thisGRP.name(),clone))\n\t\tcloneAxis\['uniform_scale'].setExpression('\{0\}.offsetType==0? \{0\}.uniform_scale_parent+(\{0\}.uniform_scale_offset_child*\{1\}) : \{0\}.offsetType==1? \{0\}.uniform_scale_parent+(random(\{0\}.offsetType_seed, \{1\})*\{0\}.uniform_scale_offset_child) : \{0\}.uniform_scale_parent+((random(\{0\}.offsetType_seed, \{1\}*\{0\}.uniform_scale_offset_child)*\{0\}.uniform_scale_offset_child*\{1\}))'.format(thisGRP.name(),clone))\n\t\tcloneAxis\['skew'].setExpression('\{0\}.offsetType==0? \{0\}.skew_parent+(\{0\}.skew_offset_child*\{1\}) : \{0\}.offsetType==1? \{0\}.skew_parent+((random(\{0\}.offsetType_seed, \{1\})-0.5)*\{0\}.skew_offset_child) : \{0\}.skew_parent+(((random(\{0\}.offsetType_seed, \{1\}*\{0\}.skew_offset_child)-0.5)*\{0\}.skew_offset_child*\{1\}))'.format(thisGRP.name(),clone))\n\t\tcloneAxis\['pivot'].setExpression('\{0\}.origin_child==0?translate*-1:0'.format(thisGRP.name()))\n\n\t\tcloneAxis.setXpos(thisXPOS+450+(100*clone))\n\t\tcloneAxis.setYpos(thisYPOS+1100)\n\t\tcloneTransGeo.setInput(1, cloneAxis)\n\t\taxisList.append(cloneAxis.name())\n\n\t\t### look camera ###\n\t\tif addCamInput == 1 :\n\t\t\tif clone == 0 :\n\t\t\t\tlookCamConnect = nuke.nodes.Dot(name='dot_lookCam' + randomName, label='LOOK CAMERA INPUT', note_font='Bold')\n\t\t\t\tlookCamConnect.setXpos(thisXPOS+250)\n\t\t\t\tlookCamConnect.setYpos(thisYPOS+1200)\n\t\t\t\tmiscList.append(lookCamConnect.name())\n\n\t\t\tcloneTransGeo.setInput(2, lookCamConnect)\n\n\t\tendMerge.setInput(clone, cloneTransGeo)\n\n### record ###\n\nwriteinStorage()\n\ngoStore\['colorFN'].execute()\nfalloffUpdate()" +STARTLINE}
+ addUserKnob {22 Cleanup -STARTLINE T "thisGRP = nuke.thisGroup()\ngoStore = nuke.toNode('store')\ngoStore\['generalFN'].execute()\n\nggLevel = getLevel()\n\ngoStore\['geoKnobsFN'].execute()\ngeoFocus('hide_all')\n\ngoStore\['textureFN'].execute()\ntextureOrder('none')\n\nwith ggLevel :\n\tcleanupStorage()"}
+ addUserKnob {22 bakelinked l "Bake select linked nodes" T "import re\n\nthisGRP = nuke.thisGroup()\n\ngoStore = nuke.toNode('store')\ngoStore\['generalFN'].execute()\n\nroot = getLevel()\n\nwith root :\n\n\tlinkedKnobs = \[]\n\n\tfor node in nuke.selectedNodes() :\n\t\tfor knob in node.knobs() :\n\t\t\tif node\[knob].hasExpression() :\n\t\t\t\tfor anim in node\[knob].animations() :\n\t\t\t\t\tif re.split('\\.|\\?|\\(|\\)|,|\\*',anim.expression()).count(thisGRP.name()) >= 1 :\n\t\t\t\t\t\tif linkedKnobs.count(knob) == 0 :\n\t\t\t\t\t\t\tlinkedKnobs.append(knob)\n\n\tif len(linkedKnobs) == 0 :\n\t\tnuke.message('No linked knob found.')\n\telse :\n\t\tpopmenu = nuke.Panel('Select linked knobs to bake :')\n\t\tfor knobmenu in range (0, len(linkedKnobs)) :\n\t\t\tpopmenu.addBooleanCheckBox(linkedKnobs\[knobmenu], True)\n\n\t\tif popmenu.show() == 1 :\n\n\t\t\tconfirmKnobs = \[]\n\t\t\tfor goodknob in range (0, len(linkedKnobs)) :\n\t\t\t\tif popmenu.value(linkedKnobs\[goodknob]) == True :\n\t\t\t\t\tconfirmKnobs.append(linkedKnobs\[goodknob])\n\n\t\n\t\t\tfirstFR = nuke.root().firstFrame()\n\t\t\tlastFR = nuke.root().lastFrame()\n\n\t\t\tfor node in nuke.selectedNodes() :\n\t\t\t\tfor knob in node.knobs() :\n\t\t\t\t\tif confirmKnobs.count(knob) == 1 :\n\t\t\t\t\t\tfor anim in node\[knob].animations() :\n\t\t\t\t\t\t\tnode\[knob].clearAnimated()" +STARTLINE}
+ addUserKnob {1 ggTXTBox +HIDDEN}
+ addUserKnob {1 ggUnpremultBox +HIDDEN}
+ addUserKnob {1 ggMultBox +HIDDEN}
+ addUserKnob {1 ggPremultBox +HIDDEN}
+ addUserKnob {1 ggClampBox +HIDDEN}
+ addUserKnob {1 ggBDBox +HIDDEN}
+ addUserKnob {1 ggBlendMatBox +HIDDEN}
+ addUserKnob {1 ggProj3DBox +HIDDEN}
+ addUserKnob {1 ggGeoBox +HIDDEN}
+ addUserKnob {1 ggProcBox +HIDDEN}
+ addUserKnob {1 ggTransGeoBox +HIDDEN}
+ addUserKnob {1 ggAxisBox +HIDDEN}
+ addUserKnob {1 ggMiscBox +HIDDEN}
+ addUserKnob {41 font T store.font}
+ addUserKnob {6 disable_error l "disble text" +STARTLINE}
+ addUserKnob {20 geosetting l "Geo Setting"}
+ addUserKnob {26 geo_look_setting l "Geo Display Setting"}
+ addUserKnob {4 ggdisplay l display M {off wireframe solid solid+wireframe texture texture+wireframe ""}}
+ ggdisplay texture+wireframe
+ addUserKnob {6 ggselectable l selectable -STARTLINE}
+ ggselectable true
+ addUserKnob {4 ggrender l render M {off wireframe solid solid+wireframe texture texture+wireframe ""}}
+ ggrender texture
+ addUserKnob {26 axis_look_setting l "Axis Display Setting"}
+ addUserKnob {4 axdisplay l display M {off on}}
+ addUserKnob {6 axselectable l selectable -STARTLINE}
+ addUserKnob {26 transformation l Transformation}
+ addUserKnob {41 offsetType l "child offset type" T menu_offsetType.offsetType}
+ addUserKnob {3 offsetType_seed l "random seed" -STARTLINE +DISABLED}
+ addUserKnob {20 GEOPOSTabBegin l "" +STARTLINE n -2}
+ addUserKnob {20 transform_parent_tab l Parent}
+ addUserKnob {13 translate_parent l translate}
+ addUserKnob {13 rotate_parent l rotate}
+ addUserKnob {13 scaling_parent l scale}
+ scaling_parent {1 1 1}
+ addUserKnob {7 uniform_scale_parent l "uniform scale" R 0.01 10}
+ uniform_scale_parent 1
+ addUserKnob {13 skew_parent l skew}
+ addUserKnob {13 pivot_parent l pivot}
+ addUserKnob {20 transform_child_tab l child}
+ addUserKnob {4 origin_child l "child origin" M {Parent Child "" "" "" "" ""}}
+ addUserKnob {13 translate_offset_child l "translate offset"}
+ translate_offset_child {0 0 -1}
+ addUserKnob {13 rotate_offset_child l "rotate offset"}
+ addUserKnob {13 scaling_offset_child l "scale offset"}
+ addUserKnob {7 uniform_scale_offset_child l "uniform scale offset" R -10 10}
+ addUserKnob {13 skew_offset_child l "skew offset"}
+ addUserKnob {20 GEOPOSTabEnd l "" +STARTLINE n -3}
+ addUserKnob {26 title_card l Card +HIDDEN}
+ addUserKnob {4 orientation_card l orientation +HIDDEN M {XY YZ ZX}}
+ addUserKnob {6 image_aspect_card l "image aspect" -STARTLINE +HIDDEN}
+ image_aspect_card true
+ addUserKnob {3 rows_card l rows/columns +HIDDEN}
+ rows_card 8
+ addUserKnob {3 columns_card l "" -STARTLINE +HIDDEN}
+ columns_card 8
+ addUserKnob {7 z_card l z +HIDDEN R 0 1000}
+ addUserKnob {7 lens_in_focal_card l "lens-in focal" +HIDDEN R 0.1 50}
+ lens_in_focal_card 1
+ addUserKnob {7 lens_in_haperture_card l "lens-in haperture" +HIDDEN R 0.1 50}
+ lens_in_haperture_card 1
+ addUserKnob {26 title_sphere l Sphere +HIDDEN}
+ addUserKnob {3 rows_sphere l rows/columns +HIDDEN}
+ rows_sphere 30
+ addUserKnob {3 columns_sphere l "" -STARTLINE +HIDDEN}
+ columns_sphere 30
+ addUserKnob {7 radius_sphere l radius +HIDDEN}
+ radius_sphere 1
+ addUserKnob {7 u_extent_sphere l u_extent +HIDDEN R 0 360}
+ u_extent_sphere 360
+ addUserKnob {7 v_extent_sphere l v_extent +HIDDEN R 0 180}
+ v_extent_sphere 180
+ addUserKnob {6 close_top_sphere l "close top" +HIDDEN +STARTLINE}
+ close_top_sphere true
+ addUserKnob {6 close_bottom_sphere l "close bottom" -STARTLINE +HIDDEN}
+ close_bottom_sphere true
+ addUserKnob {26 title_cube l Cube +HIDDEN}
+ addUserKnob {3 rows_cube l rows/columns +HIDDEN}
+ rows_cube 10
+ addUserKnob {3 columns_cube l "" -STARTLINE +HIDDEN}
+ columns_cube 10
+ addUserKnob {6 separate_faces_cube l "separate faces" -STARTLINE +HIDDEN}
+ separate_faces_cube true
+ addUserKnob {31 cube_cube l cube +HIDDEN}
+ cube_cube {-0.5 -0.5 -0.5 0.5 0.5 0.5}
+ addUserKnob {26 title_cylinder l Cylinder +HIDDEN}
+ addUserKnob {3 rows_cylinder l rows/columns +HIDDEN}
+ rows_cylinder 30
+ addUserKnob {3 columns_cylinder l "" -STARTLINE +HIDDEN}
+ columns_cylinder 30
+ addUserKnob {7 radius_cylinder l radius +HIDDEN}
+ radius_cylinder 1
+ addUserKnob {7 height_cylinder l height +HIDDEN R 0 2}
+ height_cylinder 2
+ addUserKnob {7 u_extent_cylinder l "u extent" +HIDDEN R 0 360}
+ u_extent_cylinder 360
+ addUserKnob {6 close_top_cylinder l "close top" +HIDDEN +STARTLINE}
+ addUserKnob {6 close_bottom_cylinder l "close bottom" -STARTLINE +HIDDEN}
+ addUserKnob {26 title_readgeo l ReadGeo +HIDDEN}
+ addUserKnob {3 range_first_readgeo l "frame range" +HIDDEN}
+ range_first_readgeo 1
+ addUserKnob {3 range_last_readgeo l "" -STARTLINE +HIDDEN}
+ range_last_readgeo 1
+ addUserKnob {26 ""}
+ addUserKnob {20 falloff l Falloff}
+ addUserKnob {22 color_update l "Color Update" T "thisGRP = nuke.thisGroup()\n\ngoStore = nuke.toNode('store')\ngoStore\['generalFN'].execute()\ngoStore\['colorFN'].execute()\n\nggLevel = getLevel()\nfalloffUpdate()" +STARTLINE}
+ addUserKnob {6 falloff_clamp l "Disable Clamp" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {41 color_falloff l "" -STARTLINE T n_ECHOLUT.lut}
+ addUserKnob {0 "" +INVISIBLE}
+ addUserKnob {20 misc l Misc}
+ addUserKnob {20 MISCTabBegin l "" +STARTLINE n -2}
+ addUserKnob {20 bd_tab l Blur/Defocus}
+ addUserKnob {4 soft_type l Method M {Constant Echo "" ""}}
+ addUserKnob {7 soft_value l Value R 0 100}
+ addUserKnob {20 blendmat_tab l BlendMat}
+ addUserKnob {4 blendmat_operation l operation M {none replace over stencil mask plus max min ""}}
+ blendmat_operation over
+ addUserKnob {4 blendmat_surfaceblend l "Surface Blend" M {"input fragment" "vertex color" modulate plus over subtract ""}}
+ addUserKnob {20 proj3d_tab l "Project 3D"}
+ addUserKnob {4 proj3d_project_on l "Project on" M {both front back}}
+ addUserKnob {6 proj3d_crop l Crop -STARTLINE}
+ proj3d_crop true
+ addUserKnob {4 proj3d_occlusion_mode l "Occlusion Mode" M {none self world}}
+ addUserKnob {20 procgeo_tab l ProcGeo}
+ addUserKnob {41 procgeo_var l Variation T menu_procgeo_var.k_PROCGEO_VAR}
+ addUserKnob {3 procgeo_seed l "Random Seed"}
+ addUserKnob {4 procgeo_mode l "ProceduralNoise Method" M {Turbulence fBm "" ""}}
+ addUserKnob {4 procgeo_orient l Orientation M {X Y Z All ""}}
+ procgeo_orient Z
+ addUserKnob {7 procgeo_x_size l "X Size" R 0 20}
+ procgeo_x_size 4
+ addUserKnob {7 procgeo_x_offset l "X Offset" R 0 100}
+ addUserKnob {7 procgeo_y_size l "Y Size" R 0 20}
+ procgeo_y_size 4
+ addUserKnob {7 procgeo_y_offset l "Y Offset" R 0 100}
+ addUserKnob {3 procgeo_Octaves l Octaves}
+ procgeo_Octaves 5
+ addUserKnob {7 procgeo_Lacunarity l Lacunarity R 1 5}
+ procgeo_Lacunarity 2.5
+ addUserKnob {7 procgeo_Gain l Gain R -1 1}
+ procgeo_Gain 0.5
+ addUserKnob {7 procgeo_Speed l Speed R 0 10}
+ procgeo_Speed 1.1
+ addUserKnob {20 procgeo_child_setting l "Echo Setting" +DISABLED n 1}
+ procgeo_child_setting 0
+ addUserKnob {7 procgeo_offset_x_size l "X Size" +DISABLED R -10 10}
+ addUserKnob {7 procgeo_offset_x_offset l "X Offset" +DISABLED R -10 10}
+ addUserKnob {7 procgeo_offset_y_size l "Y Size" +DISABLED R -10 10}
+ addUserKnob {7 procgeo_offset_y_offset l "Y Offset" +DISABLED R -10 10}
+ addUserKnob {3 procgeo_offset_Octaves l Octaves +DISABLED}
+ addUserKnob {7 procgeo_offset_Lacunarity l Lacunarity +DISABLED R -10 10}
+ addUserKnob {7 procgeo_offset_Gain l Gain +DISABLED R -10 10}
+ addUserKnob {7 procgeo_offset_Speed l Speed +DISABLED R -10 10}
+ addUserKnob {20 endGroup_6 l endGroup +DISABLED n -1}
+ addUserKnob {20 txtinput_tab l "Texture Input"}
+ addUserKnob {3 txtinput_first_frame l "First frame"}
+ txtinput_first_frame 1001
+ addUserKnob {3 txtinput_last_frame l "Last frame" -STARTLINE}
+ txtinput_last_frame 1100
+ addUserKnob {26 ""}
+ addUserKnob {26 txtinput_constant_setting l "<b>Constant Setting</b>" +HIDDEN}
+ addUserKnob {3 txtinput_constant_hold l Framehold +HIDDEN}
+ txtinput_constant_hold 1001
+ addUserKnob {26 txtinput_step_setting l "<b>Step Setting</b>" +HIDDEN}
+ addUserKnob {3 txtinput_step_interval l "Frame interval" +HIDDEN}
+ txtinput_step_interval 1
+ addUserKnob {26 txtinput_random_setting l "<b>Random Setting</b>" +HIDDEN}
+ addUserKnob {7 txtinput_random_mult l "Random Multiply" t "value as 1 is equal to above frame range setting" +HIDDEN R 0.1 1}
+ txtinput_random_mult 1
+ addUserKnob {3 txtinput_random_seed l "Random Seed" +HIDDEN}
+ addUserKnob {20 MISCTabEnd l "" +STARTLINE n -3}
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 1.0}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-02-18}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.0<br>-&nbsp;font&nbsp;fix\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x141414ff
+  label "Dont touch"
+  note_font_size 42
+  xpos -567
+  ypos -276
+  bdwidth 256
+  bdheight 559
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  tile_color 0x4754ff
+  label "For falloff"
+  note_font_size 42
+  xpos -257
+  ypos -277
+  bdwidth 525
+  bdheight 909
+ }
+ Crop {
+  inputs 0
+  box {0 0 35 101}
+  reformat true
+  crop false
+  name n_ECHOMAP
+  xpos -135
+  ypos 89
+ }
+ Ramp {
+  p0 {0 0}
+  p1 {0 100}
+  name n_ECHORAMP
+  xpos -135
+  ypos 171
+ }
+ ColorLookup {
+  name n_ECHOLUT
+  xpos -135
+  ypos 253
+ }
+ Crop {
+  box {0 0 35 101}
+  name BLACKOUTSIDE
+  xpos -135
+  ypos 335
+ }
+set Nd194410 [stack 0]
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name n_SHUFFLEALPHA
+  xpos -135
+  ypos 417
+ }
+ Transform {
+  translate {52 0}
+  center {10 50.5}
+  name n_ALPHATRANS
+  xpos -135
+  ypos 499
+ }
+push $Nd194410
+ Crop {
+  inputs 0
+  box {0 0 160 180}
+  reformat true
+  crop false
+  name n_ECHOMAP1
+  xpos 66
+  ypos -191
+ }
+ Text {
+  message "Falloff setting\n(in visual)"
+  font "\[value store.font]"
+  size 18
+  xjustify center
+  yjustify center
+  Transform 1
+  box {0 130 160 180}
+  center {1024 778}
+  name n_TEXT_title
+  xpos 66
+  ypos -109
+ }
+ Text {
+  message From
+  font "\[value store.font]"
+  size 18
+  yjustify top
+  Transform 1
+  box {100 0 160 101}
+  center {1024 778}
+  name n_TEXT_from
+  xpos 66
+  ypos -27
+ }
+ Text {
+  message To
+  font "\[value store.font]"
+  size 18
+  yjustify bottom
+  Transform 1
+  box {100 0 160 101}
+  center {1024 778}
+  name n_TEXT_to
+  xpos 66
+  ypos 55
+ }
+ Text {
+  message RGB
+  font "\[value store.font]"
+  size 18
+  yjustify top
+  Transform 1
+  box {0 0 120 130}
+  center {1024 778}
+  name n_TEXT_rgb
+  xpos 66
+  ypos 137
+ }
+ Text {
+  message A
+  font "\[value store.font]"
+  size 18
+  yjustify top
+  Transform 1
+  box {65 0 120 130}
+  center {1024 778}
+  name n_TEXT_a
+  xpos 66
+  ypos 219
+ }
+ Merge2 {
+  inputs 2
+  name n_DISPLAYRGB
+  xpos 66
+  ypos 335
+ }
+ Merge2 {
+  inputs 2
+  name n_DISPLAYALPHA
+  xpos 66
+  ypos 499
+ }
+ Crop {
+  box {0 0 160 180}
+  reformat true
+  crop false
+  name BLACKOUTSIDE_ALL
+  xpos 66
+  ypos 581
+ }
+ Output {
+  name Output1
+  xpos 66
+  ypos 785
+ }
+ NoOp {
+  inputs 0
+  name menu_blur
+  knobChanged "\nthisGRP = nuke.thisGroup()\nif thisGRP\['addBD'].getValue() == 1 :\n    thisGRP\['BD_select'].setEnabled(True)\nelse :\n    thisGRP\['BD_select'].setEnabled(False)\n"
+  xpos -505
+  ypos -176
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {6 addBD l "use Blur/Defocus :" +STARTLINE}
+ }
+ NoOp {
+  inputs 0
+  name menu_texture
+  knobChanged "\nthisGRP = nuke.thisGroup()\nif thisGRP\['inputTimingType'].getValue() != 0 :\n    thisGRP\['inputOrder'].setEnabled(True)\nelse :\n    thisGRP\['inputOrder'].setEnabled(False)\n"
+  xpos -503
+  ypos -115
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {4 inputTimingType l "Input Timing Type" M {None Framehold Timeoffset}}
+ }
+ NoOp {
+  inputs 0
+  name menu_geo
+  knobChanged "\nthisGRP = nuke.thisGroup()\nif thisGRP\['geoType'].getValue() == 4 :\n    thisGRP\['file'].setEnabled(True)\nelse :\n    thisGRP\['file'].setEnabled(False)\n"
+  xpos -504
+  ypos -49
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {4 geoType l "Geo Type" M {Card Sphere Cube Cylinder "Input Geo"}}
+ }
+ NoOp {
+  inputs 0
+  name menu_offsetType
+  knobChanged "\nthisGRP = nuke.thisGroup()\nif thisGRP\['offsetType'].getValue() == 0 :\n    thisGRP\['offsetType_seed'].setEnabled(False)\nelse :\n    thisGRP\['offsetType_seed'].setEnabled(True)\n"
+  xpos -502
+  ypos 35
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {4 offsetType l "child offset type" M {echo random echo+random}}
+ }
+ NoOp {
+  inputs 0
+  name menu_procgeo_var
+  knobChanged "\nthisGRP = nuke.thisGroup()\nprocgeoKnobList = \['procgeo_offset_x_size', 'procgeo_offset_x_offset', 'procgeo_offset_y_size', 'procgeo_offset_y_offset', 'procgeo_offset_Octaves', 'procgeo_offset_Lacunarity', 'procgeo_offset_Gain', 'procgeo_offset_Speed']\nif thisGRP\['procgeo_var'].getValue() == 1 or thisGRP\['procgeo_var'].getValue() == 2 :\n  for o in xrange (0, len(procgeoKnobList), 1) :\n    thisGRP\[procgeoKnobList\[o]].setEnabled(True)\n\n  if thisGRP\['procgeo_var'].getValue() == 2 :\n    thisGRP\['procgeo_seed'].setEnabled(True)\n  else :\n    thisGRP\['procgeo_seed'].setEnabled(False)\nelse :\n  for o in xrange (0, len(procgeoKnobList), 1) :\n    thisGRP\[procgeoKnobList\[o]].setEnabled(False)\n"
+  xpos -500
+  ypos 99
+  addUserKnob {20 User}
+  addUserKnob {4 k_PROCGEO_VAR l Variation M {None Echo Random ""}}
+ }
+ NoOp {
+  inputs 0
+  name DEV_Tools
+  xpos -875
+  ypos -194
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {22 show_hidden_storage T "thisGRP = nuke.thisGroup()\nstorageLIST = \['ggTXTBox','ggUnpremultBox','ggMultBox','ggPremultBox','ggClampBox','ggBDBox','ggBlendMatBox','ggProj3DBox','ggGeoBox','ggProcBox','ggTransGeoBox','ggAxisBox','ggMiscBox']\n\nfor i in range (0, len(storageLIST)) :\n\tthisGRP\[storageLIST\[i]].setVisible(True)" +STARTLINE}
+  addUserKnob {22 hide_hidden_storage T "thisGRP = nuke.thisGroup()\nstorageLIST = \['ggTXTBox','ggUnpremultBox','ggMultBox','ggPremultBox','ggClampBox','ggBDBox','ggBlendMatBox','ggProj3DBox','ggGeoBox','ggProcBox','ggTransGeoBox','ggAxisBox','ggMiscBox']\n\nfor i in range (0, len(storageLIST)) :\n\tthisGRP\[storageLIST\[i]].setVisible(False)" +STARTLINE}
+  addUserKnob {22 show_all_geoknobs T "goStore = nuke.toNode('store')\ngoStore\['geoKnobsFN'].execute()\ngeoFocus('show_all')" +STARTLINE}
+  addUserKnob {22 hide_all_geoknobs T "goStore = nuke.toNode('store')\ngoStore\['geoKnobsFN'].execute()\ngeoFocus('hide_all')" +STARTLINE}
+  addUserKnob {22 show_all_textureknobs T "goStore = nuke.toNode('store')\ngoStore\['textureFN'].execute()\ntextureOrder('dev')" +STARTLINE}
+  addUserKnob {22 hide_all_textureknobs T "goStore = nuke.toNode('store')\ngoStore\['textureFN'].execute()\ntextureOrder('none')" +STARTLINE}
+ }
+ NoOp {
+  inputs 0
+  name store
+  xpos -746
+  ypos -194
+  hide_input true
+  addUserKnob {20 User}
+  addUserKnob {2 font}
+  font /mnt/data-001/app/nuke/linux/12.0v4/plugins/fonts/UtopiaBold.pfa
+  addUserKnob {22 generalFN T "def getLevel() :\n\t### level define ###\n\tif len(nuke.thisNode().fullName().split('.')) == 1 :\n\t\t  ggLevel = nuke.root()\n\telse :\n\t\t  nodePath = nuke.thisNode().fullName().split('.')\n\t\t  nodePath.pop()\n\t\t  ggLevel = nuke.toNode('.'.join(nodePath))\n\treturn ggLevel\n\n#########\n\ndef randomName() :\n\timport random\n\treturn str(random.randint(1,1000))\n\n#########\n\ndef writeinStorage() :\n\tstorageList = \['ggTXTBox','ggUnpremultBox','ggMultBox','ggPremultBox','ggClampBox','ggBDBox','ggBlendMatBox','ggProj3DBox','ggGeoBox','ggProcBox','ggTransGeoBox','ggAxisBox','ggMiscBox']\n\tgeneratedList = \[txtList,unpremultList,multList,premultList,clampList,bdList,blendmatList,proj3dList,geoList,procgeoList,transgeoList,axisList,miscList]\n\tfor i in range (0, len(storageList)) :\n\t\tthisGRP\[storageList\[i]].setValue(','.join(generatedList\[i]))\n\n#########\n\ndef cleanupStorage() :\n\tstorageList = \['ggTXTBox','ggUnpremultBox','ggMultBox','ggPremultBox','ggClampBox','ggBDBox','ggBlendMatBox','ggProj3DBox','ggGeoBox','ggProcBox','ggTransGeoBox','ggAxisBox','ggMiscBox']\n\n\tfor i in range (0, len(storageList)) :\n\t\tif len(storageList\[i]) != 0 :\n\t\t\tnodesList = thisGRP\[storageList\[i]].getValue().split(',')\n\t\t\tfor j in range (0, len(nodesList)) :\n\t\t\t\tnuke.delete(nuke.toNode(nodesList\[j]))\n\t\t\tthisGRP\[storageList\[i]].setValue('')" +STARTLINE}
+  addUserKnob {22 geoKnobsFN T "def geoFocus(focus) :\n\tthisGRP = nuke.thisGroup()\n\n\tgeoTypeName = \['card','sphere','cube','cylinder','readgeo']\n\n\tfor i in range (0, len(geoTypeName)) :\n\t\tfor knob in thisGRP.knobs() :\n\t\t\tif knob.split('_').pop() == geoTypeName\[i] :\n\t\t\t\tif focus == 'show_all' :\n\t\t\t\t\tthisGRP\[knob].setVisible(True)\n\t\t\t\tif focus == 'hide_all' :\n\t\t\t\t\tthisGRP\[knob].setVisible(False)\n\t\t\t\tif focus == geoTypeName\[i] :\n\t\t\t\t\tthisGRP\[knob].setVisible(True)\n\t\t\t\telse :\n\t\t\t\t\tif focus != 'show_all' :\n\t\t\t\t\t\tif focus != 'hide_all' :\n\t\t\t\t\t\t\tthisGRP\[knob].setVisible(False)" +STARTLINE}
+  addUserKnob {22 colorFN T "def falloffUpdate() :\n\tallMultNodes = thisGRP\['ggMultBox'].getValue().split(',')\n\n\tif len(allMultNodes) == 0 :\n\t\tnuke.message('No nodes link to this tool.')\n\telse :\n\t\twith ggLevel :\n\t\t\tfor i in range (0, len(allMultNodes)) :\n\t\t\t\tv_SAMY = (100/(len(allMultNodes)-1))*((len(allMultNodes)-1)-i)\n\t\t\t\tv_SAMCOLOR = \[thisGRP.sample('red', 10, v_SAMY), thisGRP.sample('green', 10, v_SAMY), thisGRP.sample('blue', 10, v_SAMY), thisGRP.sample('alpha', 10, v_SAMY)]\n\n\t\t\t\tnuke.toNode(allMultNodes\[i]).knob('value').setSingleValue(False)\n\t\t\t\tnuke.toNode(allMultNodes\[i]).knob('value').setValue(v_SAMCOLOR)\n\n\t\t\t\tprint allMultNodes\[i] + ' --- updated!!!'" +STARTLINE}
+  addUserKnob {22 textureFN T "thisGRP = nuke.thisGroup()\n\ninputTimingType = thisGRP\['inputTimingType'].getValue()\n\nconstantKnobsList = \['txtinput_constant_setting', 'txtinput_constant_hold']\nstepKnobsList = \['txtinput_step_setting', 'txtinput_step_interval']\nrandomKnobsList = \['txtinput_random_setting','txtinput_random_mult','txtinput_random_seed']\n\ndef textureOrder(option) :\n\tif option == 'constant' :\n\t\tfor tknobs in constantKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)\n\t\tfor tknobs in stepKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in randomKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\n\tif option == 'step' :\n\t\tfor tknobs in constantKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in stepKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)\n\t\tfor tknobs in randomKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\n\tif option == 'random' :\n\t\tfor tknobs in constantKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in stepKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in randomKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)\n\t\tif inputTimingType == 1 :\n\t\t\tthisGRP\['txtinput_random_mult'].setVisible(False)\n\n\tif option == 'none' :\n\t\tfor tknobs in constantKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in stepKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\t\tfor tknobs in randomKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(False)\n\n\tif option == 'dev' :\n\t\tfor tknobs in constantKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)\n\t\tfor tknobs in stepKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)\n\t\tfor tknobs in randomKnobsList :\n\t\t\tthisGRP.knobs()\[tknobs].setVisible(True)" +STARTLINE}
+ }
+end_group

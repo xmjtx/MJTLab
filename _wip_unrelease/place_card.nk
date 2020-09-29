@@ -1,0 +1,280 @@
+Group {
+ name place_card
+ tile_color 0xff0000ff
+ addUserKnob {20 tab_general l General}
+ addUserKnob {12 samplePixel l "sample position"}
+ addUserKnob {26 ""}
+ addUserKnob {41 position l "position pass" T Shuffle_pos.in}
+ addUserKnob {4 pos_space l space -STARTLINE M {world camera ""}}
+ addUserKnob {41 normal l "normal pass" T Shuffle_nor.in}
+ addUserKnob {4 nor_space l space -STARTLINE M {world camera "" ""}}
+ addUserKnob {6 calculate_rot l "calculate rotation" +STARTLINE}
+ calculate_rot true
+ addUserKnob {26 ""}
+ addUserKnob {22 create_card l "create card" T "import random\nthisGRP = nuke.thisGroup()\nthisPos = \[ int( thisGRP.xpos() ) , int( thisGRP.ypos() ) ]\ndataknobs = \['translate','rotate','scaling','uniform_scale','skew']\nxGrid = int( nuke.toNode('preferences')\['GridWidth'].getValue() )\ngoStore = nuke.toNode('store')\ngoStore\['fn'].execute()\n\ndata = \{\}\n\nfor knob in dataknobs :\n\tdata\[knob] = nuke.toNode('ax_data')\[knob].getValue()\n\nwith getLevel() :\n\tnewCard = nuke.nodes.Card(\n\t\txpos=thisPos\[0] + xGrid + random.randint( 0 , xGrid ) ,\n\t\typos=thisPos\[1] ,\n\t\timage_aspect=thisGRP\['image_aspect'].getValue() ,\n\t\trows=thisGRP\['rows'].getValue() ,\n\t\tcolumns=thisGRP\['columns'].getValue()\n\t\t)\n\nfor key, value in data.items() :\n\tnewCard\[key].setValue( value )" +STARTLINE}
+ addUserKnob {22 create_axis l "create axis" -STARTLINE T "import random\nthisGRP = nuke.thisGroup()\nthisPos = \[ int( thisGRP.xpos() ) , int( thisGRP.ypos() ) ]\ndataknobs = \['translate','rotate','scaling','uniform_scale','skew']\nxGrid = int( nuke.toNode('preferences')\['GridWidth'].getValue() )\ngoStore = nuke.toNode('store')\ngoStore\['fn'].execute()\n\ndata = \{\}\n\nfor knob in dataknobs :\n\tdata\[knob] = nuke.toNode('ax_data')\[knob].getValue()\n\nwith getLevel() :\n\tnewAX = nuke.nodes.Axis(\n\t\txpos=thisPos\[0] + xGrid + random.randint( 0 , xGrid ) ,\n\t\typos=thisPos\[1]\n\t\t)\n\nfor key, value in data.items() :\n\tnewAX\[key].setValue( value )"}
+ addUserKnob {6 image_aspect +STARTLINE}
+ image_aspect true
+ addUserKnob {3 rows l rows/columns}
+ rows 8
+ addUserKnob {3 columns l "" -STARTLINE}
+ columns 8
+ addUserKnob {13 translate_offset l "translate offset"}
+ addUserKnob {13 rotation_offset l "rotation offset"}
+ addUserKnob {13 scaling l scale}
+ scaling {1 1 1}
+ addUserKnob {7 uniform_scale l "uniform scale" R 0.01 10}
+ uniform_scale 1
+ addUserKnob {13 skew}
+ addUserKnob {26 spacer l "" +STARTLINE T <br>}
+ addUserKnob {20 grp_preview l "preview setting" n 1}
+ grp_preview 0
+ addUserKnob {4 wireframe_op l operation M {opaque "see through" over multiply modulate}}
+ wireframe_op "see through"
+ addUserKnob {41 line_width l "line width" T Wireframe1.line_width}
+ addUserKnob {41 line_color l "line color" T Wireframe1.line_color}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 1.1}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-02-26}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.1<br>-&nbsp;fix&nbsp;normal&nbsp;to&nbsp;rotate&nbsp;equation<br><br>1.0<br>-&nbsp;create&nbsp;a&nbsp;card&nbsp;or&nbsp;axis&nbsp;that&nbsp;snap&nbsp;in&nbsp;3D\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x7171c600
+  label bin
+  note_font_size 42
+  xpos -850
+  ypos 122
+  bdheight 108
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos -524
+  ypos 10
+  number 1
+ }
+ Dot {
+  name Dot5
+  xpos -490
+  ypos 1213
+ }
+ Axis {
+  inputs 0
+  translate {{"sampler_pos.pos + parent.translate_offset"} {"sampler_pos.pos + parent.translate_offset"} {"sampler_pos.pos + parent.translate_offset"}}
+  rotate {{"parent.calculate_rot == 1 ? sampler_rot.rot + parent.rotation_offset : parent.input1.rotate"} {"parent.calculate_rot == 1 ? sampler_rot.rot + parent.rotation_offset : parent.input1.rotate"} {"parent.calculate_rot == 1 ? parent.rotation_offset : parent.input1.rotate"}}
+  scaling {{parent.scaling} {parent.scaling} {parent.scaling}}
+  uniform_scale {{parent.uniform_scale}}
+  skew {{parent.skew} {parent.skew} {parent.skew}}
+  name ax_data
+  xpos -240
+  ypos 1117
+ }
+ Input {
+  inputs 0
+  name img
+  xpos 261
+  ypos -16
+ }
+ Dot {
+  name Dot2
+  xpos 295
+  ypos 157
+ }
+set N14410c00 [stack 0]
+ Dot {
+  name Dot4
+  xpos 295
+  ypos 1002
+ }
+set N14410800 [stack 0]
+ Remove {
+  name Remove1
+  xpos 143
+  ypos 992
+ }
+ Dot {
+  name Dot8
+  xpos 49
+  ypos 1002
+ }
+set N14410000 [stack 0]
+ Wireframe {
+  operation {{parent.wireframe_op}}
+  name Wireframe1
+  xpos -130
+  ypos 998
+ }
+ Card {
+  cast_shadow false
+  receive_shadow false
+  image_aspect {{parent.image_aspect}}
+  rows {{parent.rows}}
+  columns {{parent.columns}}
+  name Card1
+  xpos -130
+  ypos 1071
+ }
+ TransformGeo {
+  inputs 2
+  name TransformGeo1
+  xpos -130
+  ypos 1137
+ }
+push $N14410000
+ Dot {
+  name Dot7
+  xpos 49
+  ypos 1213
+ }
+ ScanlineRender {
+  inputs 3
+  conservative_shader_sampling false
+  motion_vectors_type off
+  MB_channel none
+  name ScanlineRender1
+  xpos -130
+  ypos 1210
+ }
+ Dot {
+  name Dot6
+  xpos -96
+  ypos 1383
+ }
+push $N14410800
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 261
+  ypos 1380
+ }
+ Output {
+  name Output1
+  xpos 261
+  ypos 1666
+ }
+push $N14410c00
+ Dot {
+  name Dot1
+  xpos 131
+  ypos 157
+ }
+set N146af800 [stack 0]
+ Dot {
+  name Dot3
+  xpos -95
+  ypos 157
+ }
+ Shuffle {
+  in none
+  alpha black
+  name Shuffle_pos
+  xpos -129
+  ypos 231
+ }
+ Remove {
+  operation keep
+  channels rgb
+  name Remove2
+  xpos -129
+  ypos 313
+ }
+set N146aec00 [stack 0]
+ ColorMatrix {
+  channels rgba
+  matrix {
+      {{parent.input1.world_matrix.0} {parent.input1.world_matrix.1} {parent.input1.world_matrix.2}}
+      {{parent.input1.world_matrix.4} {parent.input1.world_matrix.5} {parent.input1.world_matrix.6}}
+      {{parent.input1.world_matrix.8} {parent.input1.world_matrix.9} {parent.input1.world_matrix.10}}
+    }
+  invert true
+  name ColorMatrix1
+  xpos -46
+  ypos 406
+ }
+ Expression {
+  expr2 -blue
+  name Expression3
+  xpos -46
+  ypos 488
+ }
+push $N146aec00
+ Switch {
+  inputs 2
+  which {{pos_space}}
+  name Switch2
+  xpos -129
+  ypos 567
+ }
+ NoOp {
+  name sampler_pos
+  xpos -129
+  ypos 709
+  addUserKnob {20 User}
+  addUserKnob {13 pos}
+  pos {{"\[sample this red parent.samplePixel.x parent.samplePixel.y]"} {"\[sample this green parent.samplePixel.x parent.samplePixel.y]"} {"\[sample this blue parent.samplePixel.x parent.samplePixel.y]"}}
+ }
+ NoOp {
+  inputs 0
+  name store
+  xpos -840
+  ypos 202
+  addUserKnob {20 User}
+  addUserKnob {22 fn T "def getLevel() :\n\t### level define ###\n\tif len(nuke.thisNode().fullName().split('.')) == 1 :\n\t\t  ggLevel = nuke.root()\n\telse :\n\t\t  nodePath = nuke.thisNode().fullName().split('.')\n\t\t  nodePath.pop()\n\t\t  ggLevel = nuke.toNode('.'.join(nodePath))\n\treturn ggLevel\n\n#########" +STARTLINE}
+ }
+push $N146af800
+ Shuffle {
+  in none
+  alpha black
+  name Shuffle_nor
+  xpos 97
+  ypos 231
+ }
+ Remove {
+  operation keep
+  channels rgb
+  name Remove3
+  xpos 97
+  ypos 313
+ }
+set Nb33e7000 [stack 0]
+ ColorMatrix {
+  channels rgba
+  matrix {
+      {{parent.input1.world_matrix.0} {parent.input1.world_matrix.1} {parent.input1.world_matrix.2}}
+      {{parent.input1.world_matrix.4} {parent.input1.world_matrix.5} {parent.input1.world_matrix.6}}
+      {{parent.input1.world_matrix.8} {parent.input1.world_matrix.9} {parent.input1.world_matrix.10}}
+    }
+  invert true
+  name ColorMatrix2
+  xpos 184
+  ypos 419
+ }
+push $Nb33e7000
+ Switch {
+  inputs 2
+  which {{nor_space}}
+  name Switch1
+  xpos 97
+  ypos 527
+ }
+ Expression {
+  expr0 "degrees( sinh(g) )"
+  expr1 "degrees( sinh(r) )+180"
+  name Expression2
+  selected true
+  xpos 97
+  ypos 630
+ }
+ NoOp {
+  name sampler_rot
+  xpos 97
+  ypos 712
+  addUserKnob {20 User}
+  addUserKnob {13 rot}
+  rot {{"\[sample this red parent.samplePixel.x parent.samplePixel.y]"} {"\[sample this green parent.samplePixel.x parent.samplePixel.y]"} {"\[sample this blue parent.samplePixel.x parent.samplePixel.y]"}}
+ }
+end_group
