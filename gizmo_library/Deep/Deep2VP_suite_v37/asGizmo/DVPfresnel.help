@@ -1,0 +1,3 @@
+DVPfresnel
+
+This node will create fresnel/facing ratio in deep. Output of this node is raw light in deep format. So user can use this raw light output, or connect to ‘DVPScene’ to light it with beauty. ‘DVPfresnel’ node can be stack with multiple 'DVPrelight' nodes to mix with lights. Since fresnel is not the actual light, so it doesn't have transformation in 3D space. If you want to apply on specify area, use 'DVPmatte' on it.

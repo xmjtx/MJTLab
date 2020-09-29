@@ -1,0 +1,9 @@
+DeepFromPosition
+
+Convert position data to deep.
+
+How to use :
+- connect comp tree
+- connect camera
+- select the channel and what space of your position data
+- then downstream will deep
