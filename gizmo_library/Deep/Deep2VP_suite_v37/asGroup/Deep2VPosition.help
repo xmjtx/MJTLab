@@ -1,5 +1,0 @@
-Deep2VPosition
-
-Deep2VPosition is a main node in this entire toolset. It converts deep data to 3D position data and process all the nodes in this toolset. So this node needs to go before any nodes. Once gather the camera data, and it will generate position data under a new channel, called ‘deepPosition’. After this channel had been created, then you don't have to add this node anymore in downstream.
-
-‘deepPosition’ also able to use on any position tools in 2D. Use ‘DVPToImage’ converts to this channel to 2D can fix all the semi-transparent pixels and pixel filter.

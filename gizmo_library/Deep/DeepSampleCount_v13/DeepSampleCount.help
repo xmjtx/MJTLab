@@ -1,7 +1,0 @@
-DeepSampleCount
-
-Convert the amount of samples per pixel into colormap visual. Help for troubleshoot, investigate the ground of slow deep tree, or tool development. The setup run by some math & TCL expression, able to run in realtime and fast feedback.
-
-It will created a channel called 'deepSample.count', it stores the total samples per pixel.
-
-*Due to decimal limit, it can only calculate up to 23 samples per pixel. 24+ samples will all count as 24.
