@@ -1,0 +1,366 @@
+Group {
+ name DeepFilter
+ tile_color 0x145bff
+ label "<font color=cyan>Deep Output</font>"
+ addUserKnob {20 tab_general l General}
+ addUserKnob {22 setupMTX l "setup matrix size" t "Setup matrix size in UI and generated new deep samples." T "import math\n\n##### function\n\ndef genMTX( _size1 , _size2 , _type ) :\n\tcenter1 = findCenter( _size1 )\n\tcenter2 = findCenter( _size2 )\n\trng2 = \[]\n\tfor y in range( _size2 ) :\n\t\trng1 = \[]\n\t\tfor x in range( _size1 ) :\n\t\t\tif _type == 'z' :\n\t\t\t\tif y in center2 :\n\t\t\t\t\trng1 += \['1']\n\t\t\t\telse :\n\t\t\t\t\trng1 +=\['0']\n\t\t\telse :\n\t\t\t\tif x in center1 and y in center2 :\n\t\t\t\t\trng1 += \['1']\n\t\t\t\telse :\n\t\t\t\t\trng1 += \['0']\n\t\trng2.append( '\{' + ' '.join(rng1) + '\}' )\n\treturn ' '.join( rng2 )\n\ndef findCenter( _value ) :\n\tcenterCell = \[]\n\tif (_value-1)/2%1 :\n\t\tcenterCell.append( int(math.floor((_value-1)/2)) )\n\t\tcenterCell.append( int(math.ceil((_value-1)/2)) )\n\telse :\n\t\tcenterCell.append( int((_value-1)/2) )\n\treturn centerCell\n\n##########\n\np = nuke.Panel('Enter desired matrix size :')\np.addSingleLineInput('X', '3')\np.addSingleLineInput('Y', '3')\np.addSingleLineInput('Z', '1')\n\nif p.show() :\n\tmtxSize = \[ int(p.value('X')), int(p.value('Y')), int(p.value('Z')) ]\n\twhiteNodes = \['DRED', 'DRST', 'DTED', 'DTST', 'dotED', 'Output1', 'deep', 'dotST', 'DUnpremult', 'DPremult']\n\n\tthisGRP = nuke.thisGroup()\n\n\twith thisGRP :\n\t\tdST = nuke.toNode('dotST')\n\t\tdED = nuke.toNode('dotED')\n\n\t\t##### cleanup\n\n\t\tfor node in nuke.allNodes() :\n\t\t\tif node.name() not in whiteNodes :\n\t\t\t\tnuke.delete( node )\n\n\t\t##### UI\n\n\t\txyMTX = nuke.nodes.Matrix(name='setXY_matrix')\n\t\txyMTX\['matrix'].fromScript( genMTX( mtxSize\[0] , mtxSize\[1] , 'xy' ) )\n\n\t\txzMTX = nuke.nodes.Matrix(name='setXZ_matrix')\n\t\txzMTX\['matrix'].fromScript( genMTX( mtxSize\[0] , mtxSize\[2] , 'z' ) )\n\n\t\t##### process\n\n\t\tdmerge = nuke.nodes.DeepMerge()\n\t\tdmerge\['drop_hidden'].setExpression( '\[value parent.drop_hidden]' )\n\t\tdED.setInput(0, dmerge)\n\n\t\txyzShift = \[0,0,0]\n\t\tconnect = 0\n\n\t\tdepthLevel = 0\n\n\t\tfor z in range( mtxSize\[2] ) :\n\t\t\txyzShift\[2] = z-int(float(mtxSize\[2])/2)\n\t\t\tif mtxSize\[2]%2 == 0 and xyzShift\[2] >= 0 :\n\t\t\t\txyzShift\[2] += 1\n\n\t\t\tdepthLevel = z*mtxSize\[2]\n\n\t\t\txyID = 0\n\n\t\t\tfor y in range( mtxSize\[1] ) :\n\t\t\t\txyzShift\[1] = int(float(mtxSize\[1])/2)-y\n\t\t\t\tif mtxSize\[1]%2 == 0 and xyzShift\[1] >= 0 :\n\t\t\t\t\txyzShift\[1] += 1\n\n\t\t\t\tfor x in range( mtxSize\[0] ) :\n\t\t\t\t\ttopGRP = xyID%mtxSize\[0]\n\t\t\t\t\tzID = topGRP+depthLevel\n\n\t\t\t\t\txyzShift\[0] = x-int(float(mtxSize\[0])/2)\n\t\t\t\t\tif mtxSize\[0]%2 == 0 and xyzShift\[0] >= 0 :\n\t\t\t\t\t\txyzShift\[0] += 1\n\n\t\t\t\t\tdtrans = nuke.nodes.DeepTransform( translate=' '.join( \[str(i) for i in xyzShift] ) , \n\t\t\t\t\t\t\t\t\t\t\t\t\tinputs=\[dST]\n\t\t\t\t\t\t\t\t\t\t\t\t\t)\n\n\t\t\t\t\tdex1 = nuke.nodes.DeepExpression( inputs=\[dtrans] )\n\t\t\t\t\tdex1\['rgba.red'].setValue( 'r*(1/a)' )\n\t\t\t\t\tdex1\['rgba.green'].setValue( 'g*(1/a)' )\n\t\t\t\t\tdex1\['rgba.blue'].setValue( 'b*(1/a)' )\n\t\t\t\t\tdex1\['rgba.alpha'].setValue( 'a*\[value parent.xyMatrix.\{0\}]*\[value parent.xzMatrix.\{1\}]'.format( str(xyID) , str(zID) ) )\n\n\t\t\t\t\tdex2 = nuke.nodes.DeepExpression( inputs=\[dex1] )\n\t\t\t\t\tdex2\['rgba.red'].setValue( 'r*a' )\n\t\t\t\t\tdex2\['rgba.green'].setValue( 'g*a' )\n\t\t\t\t\tdex2\['rgba.blue'].setValue( 'b*a' )\n\n\t\t\t\t\tdmerge.setInput(connect, dex2)\n\n\t\t\t\t\tconnect += 1\n\t\t\t\t\txyID += 1" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {41 xyMatrix t "Matrix in screenspace x and y axis." T setXY_matrix.matrix}
+ addUserKnob {26 spacer l " "}
+ addUserKnob {41 xzMatrix t "Matrix in screenspace x and z axis. Top row is furthest, bottom is closest." T setXZ_matrix.matrix}
+ addUserKnob {26 ""}
+ addUserKnob {6 drop_hidden l "drop hidden samples" t "Drop samples that are behind other samples with alpha 1 (ie those that are entirely obscured)" +STARTLINE}
+ drop_hidden true
+ addUserKnob {7 multiply_alpha l "multiply alpha" t "Constant to multiply alpha result by" R 0.01 2}
+ multiply_alpha 1
+ addUserKnob {6 clamp_alpha l "clamp alpha" t "Keep output alpha between 0.0 to 1.0" +STARTLINE}
+ clamp_alpha true
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 1.0}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-10-14}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.0<br>-&nbsp;create&nbsp;deep&nbsp;filter\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://youtube.com/c/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ Input {
+  inputs 0
+  name deep
+  xpos 0
+  ypos -7
+ }
+ DeepExpression {
+  chans1 deep
+  deep.front "alpha <= 0 ? -1 : deep.front"
+  deep.back "alpha <= 0 ? -1 : deep.back"
+  name DTST
+  xpos 0
+  ypos 73
+ }
+ DeepCrop {
+  use_znear false
+  zfar 0
+  outside_zrange true
+  bbox {0 0 0 0}
+  use_bbox false
+  name DRST
+  xpos 0
+  ypos 153
+ }
+ Dot {
+  name dotST
+  tile_color 0xff0000ff
+  xpos 34
+  ypos 257
+ }
+set Nb2c6fc00 [stack 0]
+ DeepTransform {
+  translate {1 -1 0}
+  name DeepTransform9
+  xpos 880
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.8]*\[value parent.xzMatrix.2]"
+  name DeepExpression17
+  xpos 880
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression18
+  xpos 880
+  ypos 491
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {0 -1 0}
+  name DeepTransform8
+  xpos 770
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.7]*\[value parent.xzMatrix.1]"
+  name DeepExpression15
+  xpos 770
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression16
+  xpos 770
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {-1 -1 0}
+  name DeepTransform7
+  xpos 660
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.6]*\[value parent.xzMatrix.0]"
+  name DeepExpression13
+  xpos 660
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression14
+  xpos 660
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {1 0 0}
+  name DeepTransform6
+  xpos 550
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.5]*\[value parent.xzMatrix.2]"
+  name DeepExpression11
+  xpos 550
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression12
+  xpos 550
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  name DeepTransform5
+  xpos 440
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.4]*\[value parent.xzMatrix.1]"
+  name DeepExpression9
+  xpos 440
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression10
+  xpos 440
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {-1 0 0}
+  name DeepTransform4
+  xpos 330
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.3]*\[value parent.xzMatrix.0]"
+  name DeepExpression7
+  xpos 330
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression8
+  xpos 330
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {1 1 0}
+  name DeepTransform3
+  xpos 220
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.2]*\[value parent.xzMatrix.2]"
+  name DeepExpression5
+  xpos 220
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression6
+  xpos 220
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {0 1 0}
+  name DeepTransform2
+  xpos 110
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.1]*\[value parent.xzMatrix.1]"
+  name DeepExpression3
+  xpos 110
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression4
+  xpos 110
+  ypos 571
+ }
+push $Nb2c6fc00
+ DeepTransform {
+  translate {-1 1 0}
+  name DeepTransform1
+  xpos 0
+  ypos 331
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "a*\[value parent.xyMatrix.0]*\[value parent.xzMatrix.0]"
+  name DeepExpression1
+  xpos 0
+  ypos 411
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DeepExpression2
+  xpos 0
+  ypos 571
+ }
+ DeepMerge {
+  inputs 9
+  drop_hidden {{"\[value parent.drop_hidden]"}}
+  name DeepMerge1
+  xpos 880
+  ypos 571
+ }
+ Dot {
+  name dotED
+  tile_color 0xff00ff
+  xpos 34
+  ypos 955
+ }
+ DeepExpression {
+  temp_name0 multA
+  temp_expr0 "a*\[value parent.multiply_alpha]"
+  chans1 deep
+  rgba.red r*(1/a)
+  rgba.green g*(1/a)
+  rgba.blue b*(1/a)
+  rgba.alpha "\[value clampA] ? clamp(multA) : multA"
+  name DUnpremult
+  xpos 0
+  ypos 1029
+  addUserKnob {20 User}
+  addUserKnob {3 clampA}
+  clampA {{parent.clamp_alpha}}
+ }
+ DeepExpression {
+  chans1 deep
+  rgba.red r*a
+  rgba.green g*a
+  rgba.blue b*a
+  name DPremult
+  xpos 0
+  ypos 1119
+ }
+ DeepExpression {
+  chans1 deep
+  deep.front "alpha <= 0 ? -1 : deep.front"
+  deep.back "alpha <= 0 ? -1 : deep.back"
+  name DTED
+  xpos 0
+  ypos 1189
+ }
+ DeepCrop {
+  use_znear false
+  zfar 0
+  outside_zrange true
+  bbox {0 0 0 0}
+  use_bbox false
+  name DRED
+  xpos 0
+  ypos 1269
+ }
+ Output {
+  name Output1
+  xpos 0
+  ypos 1381
+ }
+ Matrix {
+  inputs 0
+  matrix {
+      {0 0 0}
+      {0 1 0}
+      {0 0 0}
+    }
+  name setXY_matrix
+  xpos -40
+  ypos -9
+ }
+ Matrix {
+  inputs 0
+  matrix {{1 1 1}
+    }
+  name setXZ_matrix
+  xpos 70
+  ypos -9
+ }
+end_group
