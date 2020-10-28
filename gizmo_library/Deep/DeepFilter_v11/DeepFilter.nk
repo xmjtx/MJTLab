@@ -1,5 +1,6 @@
 Group {
  name DeepFilter
+ onCreate "\nnuke.thisGroup()\['gamma_alpha'].setFlag(0x00000004)\n"
  tile_color 0x145bff
  label "<font color=cyan>Deep Output</font>"
  addUserKnob {20 tab_general l General}
@@ -13,12 +14,14 @@ Group {
  drop_hidden true
  addUserKnob {7 multiply_alpha l "multiply alpha" t "Constant to multiply alpha result by" R 0.01 2}
  multiply_alpha 1
+ addUserKnob {7 gamma_alpha l "gamma alpha" R 0.2 5}
+ gamma_alpha 1
  addUserKnob {6 clamp_alpha l "clamp alpha" t "Keep output alpha between 0.0 to 1.0" +STARTLINE}
  clamp_alpha true
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l Version T 1.0}
- addUserKnob {26 l_DATE l "Date Modified" T 2020-10-14}
- addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.0<br>-&nbsp;create&nbsp;deep&nbsp;filter\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l Version T 1.1}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-10-28}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.1<br>-&nbsp;added&nbsp;'gamma&nbsp;alpha',<br>&nbsp;&nbsp;to&nbsp;keep&nbsp;solid&nbsp;alpha&nbsp;remain&nbsp;unchange.<br><br>1.0<br>-&nbsp;create&nbsp;deep&nbsp;filter\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "Developed by" T "<a href='https://youtube.com/c/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  Input {
@@ -51,7 +54,7 @@ Group {
   xpos 34
   ypos 257
  }
-set Nb2c6fc00 [stack 0]
+set Nedb6c00 [stack 0]
  DeepTransform {
   translate {1 -1 0}
   name DeepTransform9
@@ -77,7 +80,7 @@ set Nb2c6fc00 [stack 0]
   xpos 880
   ypos 491
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {0 -1 0}
   name DeepTransform8
@@ -103,7 +106,7 @@ push $Nb2c6fc00
   xpos 770
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {-1 -1 0}
   name DeepTransform7
@@ -129,7 +132,7 @@ push $Nb2c6fc00
   xpos 660
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {1 0 0}
   name DeepTransform6
@@ -155,7 +158,7 @@ push $Nb2c6fc00
   xpos 550
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   name DeepTransform5
   xpos 440
@@ -180,7 +183,7 @@ push $Nb2c6fc00
   xpos 440
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {-1 0 0}
   name DeepTransform4
@@ -206,7 +209,7 @@ push $Nb2c6fc00
   xpos 330
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {1 1 0}
   name DeepTransform3
@@ -232,7 +235,7 @@ push $Nb2c6fc00
   xpos 220
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {0 1 0}
   name DeepTransform2
@@ -258,7 +261,7 @@ push $Nb2c6fc00
   xpos 110
   ypos 571
  }
-push $Nb2c6fc00
+push $Nedb6c00
  DeepTransform {
   translate {-1 1 0}
   name DeepTransform1
@@ -299,7 +302,7 @@ push $Nb2c6fc00
  }
  DeepExpression {
   temp_name0 multA
-  temp_expr0 "a*\[value parent.multiply_alpha]"
+  temp_expr0 "(a**(1/\[value parent.gamma_alpha]))*\[value parent.multiply_alpha]"
   chans1 deep
   rgba.red r*(1/a)
   rgba.green g*(1/a)
@@ -352,15 +355,15 @@ push $Nb2c6fc00
       {0 0 0}
     }
   name setXY_matrix
-  xpos -40
-  ypos -9
+  xpos -337
+  ypos 191
  }
  Matrix {
   inputs 0
   matrix {{1 1 1}
     }
   name setXZ_matrix
-  xpos 70
-  ypos -9
+  xpos -227
+  ypos 191
  }
 end_group
