@@ -1,0 +1,213 @@
+#! C:/Program Files/Nuke12.2v3/nuke-12.2.3.dll -nx
+version 12.2 v3
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="2430" y="302" w="1918" h="1018" screen="1">
+        <splitter orientation="1">
+            <split size="40" stretch="1"/>
+            <splitter orientation="1">
+                <split size="40"/>
+                <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                    <page id="Toolbar.1"/>
+                </dock>
+            </splitter>
+            <split size="935"/>
+            <dock id="" activePageId="Viewer.1">
+                <page id="Viewer.1"/>
+            </dock>
+            <split size="935"/>
+            <dock id="" activePageId="DAG.1" focus="true">
+                <page id="DAG.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name E:/Workshop/GitHub/MJTLab/sharing/convert_normal_to_cameraAOV.nk
+ format "1280 720 0 0 1280 720 1 HD_720"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+Camera2 {
+ inputs 0
+ name Camera11
+ xpos -347
+ ypos -425
+}
+set Nf2ea3c00 [stack 0]
+CheckerBoard2 {
+ inputs 0
+ boxsize {213 213}
+ name CheckerBoard6
+ xpos -151
+ ypos -1111
+}
+Dot {
+ name Dot17
+ xpos -117
+ ypos -983
+}
+set Nf2ea3400 [stack 0]
+Sphere {
+ translate {1.02 0.2 0}
+ uniform_scale 0.2
+ name Sphere6
+ xpos 369
+ ypos -822
+}
+push $Nf2ea3400
+Sphere {
+ translate {0.61 0.2 0}
+ uniform_scale 0.2
+ name Sphere7
+ xpos 269
+ ypos -821
+}
+push $Nf2ea3400
+Sphere {
+ translate {0.2 0.2 0}
+ uniform_scale 0.2
+ name Sphere5
+ xpos 160
+ ypos -819
+}
+push $Nf2ea3400
+Sphere {
+ translate {-1.02 0.2 0}
+ uniform_scale 0.2
+ name Sphere4
+ xpos 58
+ ypos -820
+}
+push $Nf2ea3400
+Sphere {
+ translate {-0.61 0.2 0}
+ uniform_scale 0.2
+ name Sphere3
+ xpos -42
+ ypos -819
+}
+push $Nf2ea3400
+Sphere {
+ translate {-0.2 0.2 0}
+ uniform_scale 0.2
+ name Sphere2
+ xpos -151
+ ypos -817
+}
+MergeGeo {
+ inputs 6
+ name MergeGeo1
+ xpos -151
+ ypos -727
+}
+set Nf2ea1400 [stack 0]
+TransformGeo {
+ translate {0 0.41 0}
+ name TransformGeo8
+ xpos 163
+ ypos -640
+}
+push $Nf2ea1400
+TransformGeo {
+ translate {0 -0.82 0}
+ name TransformGeo7
+ xpos 47
+ ypos -631
+}
+push $Nf2ea1400
+TransformGeo {
+ translate {0 -0.41 0}
+ name TransformGeo6
+ xpos -50
+ ypos -634
+}
+push $Nf2ea1400
+MergeGeo {
+ inputs 4
+ name MergeGeo2
+ xpos -151
+ ypos -593
+}
+TransformGeo {
+ translate {0 0 -5}
+ name TransformGeo5
+ xpos -151
+ ypos -525
+}
+push $Nf2ea3c00
+Scene {
+ inputs 2
+ name Scene8
+ xpos -141
+ ypos -425
+}
+Reformat {
+ inputs 0
+ name Reformat12
+ xpos -21
+ ypos -303
+}
+add_layer {Nworld Nworld.red Nworld.green Nworld.blue Nworld.alpha}
+ScanlineRender {
+ inputs 3
+ conservative_shader_sampling false
+ motion_vectors_type distance
+ MB_channel none
+ output_shader_vectors true
+ N_channel Nworld
+ name ScanlineRender25
+ xpos -151
+ ypos -303
+}
+Shuffle {
+ in Nworld
+ in2 alpha
+ alpha red2
+ name Shuffle1
+ xpos -151
+ ypos -223
+}
+Expression {
+ temp_name0 uMult
+ temp_expr0 "abs( (x+0.5)/input.width-0.5 ) *2"
+ temp_name1 vMult
+ temp_expr1 "abs( (y+0.5)/input.height-0.5 ) *2"
+ temp_name2 hHalfAOV
+ temp_expr2 "degrees( atan( ( ( \[value haperture] / \[value focal] ) * abs( \[value depthChannel] ) /2 ) / abs( \[value distance] ) ) )"
+ temp_name3 vHalfAOV
+ temp_expr3 "degrees( atan( ( ( \[value haperture] / \[value focal] ) * (input.height/input.width) * abs( \[value depthChannel] ) /2 ) / abs( \[value depthChannel] ) ) )"
+ expr0 "alpha<=0 ? 0 : x < input.width/2 ? r*cos(radians(-hHalfAOV*uMult)) + b*sin(radians(-hHalfAOV*uMult)) : r*cos(radians(hHalfAOV*uMult)) + b*sin(radians(hHalfAOV*uMult))"
+ expr1 "alpha<=0 ? 0 : y > input.height/2 ? g*cos(radians(vHalfAOV*vMult )) + b*sin(radians(vHalfAOV*vMult)) : g*cos(radians(-vHalfAOV*vMult )) + b*sin(radians(-vHalfAOV*vMult)) * a"
+ expr2 "alpha<=0 ? 0 : x < input.width/2 && y < input.height/2 ? \nr*-cos(radians(vHalfAOV*vMult))*sin(radians(-hHalfAOV*uMult)) + g*sin(radians(vHalfAOV*vMult)) + b*cos(radians(vHalfAOV*vMult))*cos(radians(-hHalfAOV*uMult)) : x > input.width/2 && y > input.height/2 ? r*-cos(radians(-vHalfAOV*vMult))*sin(radians(hHalfAOV*uMult)) + g*sin(radians(-vHalfAOV*vMult)) + b*cos(radians(-vHalfAOV*vMult))*cos(radians(hHalfAOV*uMult)) : x < input.width/2 && y > input.height/2 ? r*-cos(radians(-vHalfAOV*vMult))*sin(radians(-hHalfAOV*uMult)) + g*sin(radians(-vHalfAOV*vMult)) + b*cos(radians(-vHalfAOV*vMult))*cos(radians(-hHalfAOV*uMult)) : r*-cos(radians(vHalfAOV*vMult))*sin(radians(hHalfAOV*uMult)) + g*sin(radians(vHalfAOV*vMult)) + b*cos(radians(vHalfAOV*vMult))*cos(radians(hHalfAOV*uMult))"
+ name Expression7
+ xpos -151
+ ypos -110
+ addUserKnob {20 User}
+ addUserKnob {7 focal}
+ focal 50
+ addUserKnob {7 haperture}
+ haperture 24.576
+ addUserKnob {7 distance}
+ distance -5
+ addUserKnob {1 depthChannel}
+ depthChannel 1/depth.Z
+}
+Viewer {
+ frame_range 1-100
+ colour_sample_bbox {-0.9250000119 -0.190624997 -0.9234374762 -0.189062506}
+ far 100000
+ softSelect true
+ name Viewer1
+ xpos -151
+ ypos 19
+}
