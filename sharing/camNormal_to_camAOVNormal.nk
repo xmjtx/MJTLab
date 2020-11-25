@@ -25,7 +25,8 @@ define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
 }
 Root {
  inputs 0
- name E:/Workshop/GitHub/MJTLab/sharing/convert_normal_to_cameraAOV.nk
+ name E:/Workshop/GitHub/MJTLab/sharing/camNormal_to_camAOVNormal.nk
+ frame 13
  format "1280 720 0 0 1280 720 1 HD_720"
  proxy_type scale
  proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
@@ -43,7 +44,7 @@ Camera2 {
  xpos -347
  ypos -425
 }
-set Nc976fc00 [stack 0]
+set N83728c00 [stack 0]
 CheckerBoard2 {
  inputs 0
  boxsize {213 213}
@@ -56,7 +57,7 @@ Dot {
  xpos -117
  ypos -983
 }
-set Nc976f400 [stack 0]
+set N83728400 [stack 0]
 Sphere {
  translate {1.02 0.2 0}
  uniform_scale 0.2
@@ -64,7 +65,7 @@ Sphere {
  xpos 369
  ypos -822
 }
-push $Nc976f400
+push $N83728400
 Sphere {
  translate {0.61 0.2 0}
  uniform_scale 0.2
@@ -72,7 +73,7 @@ Sphere {
  xpos 269
  ypos -821
 }
-push $Nc976f400
+push $N83728400
 Sphere {
  translate {0.2 0.2 0}
  uniform_scale 0.2
@@ -80,7 +81,7 @@ Sphere {
  xpos 160
  ypos -819
 }
-push $Nc976f400
+push $N83728400
 Sphere {
  translate {-1.02 0.2 0}
  uniform_scale 0.2
@@ -88,7 +89,7 @@ Sphere {
  xpos 58
  ypos -820
 }
-push $Nc976f400
+push $N83728400
 Sphere {
  translate {-0.61 0.2 0}
  uniform_scale 0.2
@@ -96,7 +97,7 @@ Sphere {
  xpos -42
  ypos -819
 }
-push $Nc976f400
+push $N83728400
 Sphere {
  translate {-0.2 0.2 0}
  uniform_scale 0.2
@@ -110,28 +111,28 @@ MergeGeo {
  xpos -151
  ypos -727
 }
-set Nc976d800 [stack 0]
+set Na557a400 [stack 0]
 TransformGeo {
  translate {0 0.41 0}
  name TransformGeo8
  xpos 163
  ypos -640
 }
-push $Nc976d800
+push $Na557a400
 TransformGeo {
  translate {0 -0.82 0}
  name TransformGeo7
  xpos 47
  ypos -631
 }
-push $Nc976d800
+push $Na557a400
 TransformGeo {
  translate {0 -0.41 0}
  name TransformGeo6
  xpos -50
  ypos -634
 }
-push $Nc976d800
+push $Na557a400
 MergeGeo {
  inputs 4
  name MergeGeo2
@@ -144,7 +145,7 @@ TransformGeo {
  xpos -151
  ypos -525
 }
-push $Nc976fc00
+push $N83728c00
 Scene {
  inputs 2
  name Scene8
@@ -183,14 +184,13 @@ Expression {
  temp_name1 vMult
  temp_expr1 "abs( (y+0.5)/input.height-0.5 ) *2"
  temp_name2 hHalfAOV
- temp_expr2 "degrees( atan( ( ( \[value haperture] / \[value focal] ) * abs( \[value depthChannel] ) /2 ) / abs( \[value distance] ) ) )"
+ temp_expr2 "degrees( atan( ( ( \[value haperture] / \[value focal] ) * abs( \[value depthChannel] ) /2 ) / abs( \[value depthChannel] ) ) )"
  temp_name3 vHalfAOV
  temp_expr3 "degrees( atan( ( ( \[value haperture] / \[value focal] ) * (input.height/input.width) * abs( \[value depthChannel] ) /2 ) / abs( \[value depthChannel] ) ) )"
  expr0 "alpha<=0 ? 0 : x < input.width/2 ? r*cos(radians(-hHalfAOV*uMult)) + b*sin(radians(-hHalfAOV*uMult)) : r*cos(radians(hHalfAOV*uMult)) + b*sin(radians(hHalfAOV*uMult))"
  expr1 "alpha<=0 ? 0 : y > input.height/2 ? g*cos(radians(vHalfAOV*vMult )) + b*sin(radians(vHalfAOV*vMult)) : g*cos(radians(-vHalfAOV*vMult )) + b*sin(radians(-vHalfAOV*vMult)) * a"
  expr2 "alpha<=0 ? 0 : x < input.width/2 && y < input.height/2 ? \nr*-cos(radians(vHalfAOV*vMult))*sin(radians(-hHalfAOV*uMult)) + g*sin(radians(vHalfAOV*vMult)) + b*cos(radians(vHalfAOV*vMult))*cos(radians(-hHalfAOV*uMult)) : x > input.width/2 && y > input.height/2 ? r*-cos(radians(-vHalfAOV*vMult))*sin(radians(hHalfAOV*uMult)) + g*sin(radians(-vHalfAOV*vMult)) + b*cos(radians(-vHalfAOV*vMult))*cos(radians(hHalfAOV*uMult)) : x < input.width/2 && y > input.height/2 ? r*-cos(radians(-vHalfAOV*vMult))*sin(radians(-hHalfAOV*uMult)) + g*sin(radians(-vHalfAOV*vMult)) + b*cos(radians(-vHalfAOV*vMult))*cos(radians(-hHalfAOV*uMult)) : r*-cos(radians(vHalfAOV*vMult))*sin(radians(hHalfAOV*uMult)) + g*sin(radians(vHalfAOV*vMult)) + b*cos(radians(vHalfAOV*vMult))*cos(radians(hHalfAOV*uMult))"
  name camNormal_to_camAOVNormal
- selected true
  xpos -151
  ypos -110
  addUserKnob {20 User}
@@ -198,13 +198,11 @@ Expression {
  focal 50
  addUserKnob {7 haperture}
  haperture 24.576
- addUserKnob {7 distance}
- distance -5
  addUserKnob {1 depthChannel}
  depthChannel 1/depth.Z
 }
 Viewer {
- frame 1
+ frame 13
  frame_range 1-100
  colour_sample_bbox {-0.9250000119 -0.190624997 -0.9234374762 -0.189062506}
  far 100000
