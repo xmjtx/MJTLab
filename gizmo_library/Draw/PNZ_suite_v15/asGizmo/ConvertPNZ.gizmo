@@ -10,7 +10,7 @@ Gizmo {
  addUserKnob {4 in_space l <b>INPUT</b> M {"world space" "camera space" "" "" "" ""}}
  addUserKnob {4 out_position l <b>OUTPUT</b> M {"world space" "camera space" "" "" ""}}
  out_position "camera space"
- addUserKnob {4 out_normal l <b>OUTPUT</b> +HIDDEN M {"world space" "camera space" fresnel ""}}
+ addUserKnob {4 out_normal l <b>OUTPUT</b> +HIDDEN M {"world space" "camera space" "" ""}}
  out_normal "camera space"
  addUserKnob {26 spacer l "" +STARTLINE T <br>}
  addUserKnob {20 CamTabBegin l "" +STARTLINE n -2}
@@ -34,12 +34,12 @@ Gizmo {
  addUserKnob {20 CamTabEnd l "" +STARTLINE n -3}
  addUserKnob {20 tab_misc l Misc}
  addUserKnob {2 font}
- font "C:/Program Files/Nuke12.0v3/plugins/fonts/UtopiaBold.pfa"
+ font "C:/Program Files/Nuke12.2v3/plugins/fonts/UtopiaBold.pfa"
  addUserKnob {6 disable_error l "disable onscreen message" +STARTLINE}
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l Version T 1.4}
- addUserKnob {26 l_DATE l "Date Modified" T 2020-01-21}
- addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue<br><br>1.2<br>-&nbsp;changed&nbsp;camera&nbsp;input&nbsp;to&nbsp;expression&nbsp;link<br>-&nbsp;fix&nbsp;alpha&nbsp;check<br>-&nbsp;added&nbsp;support&nbsp;camera&nbsp;window&nbsp;roll<br><br>1.0<br>-&nbsp;Convert&nbsp;Position&nbsp;data&nbsp;to&nbsp;Normal\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l Version T 1.5}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-11-25}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.5<br>global&nbsp;update&nbsp;:<br>-&nbsp;error&nbsp;detect&nbsp;flip&nbsp;update<br>-&nbsp;bring&nbsp;back&nbsp;alpha&nbsp;to&nbsp;downstream<br>ConvertPNZ&nbsp;:<br>-&nbsp;Normal&nbsp;conversion&nbsp;removed&nbsp;'fresnel'<br>P2Z&nbsp;:<br>-&nbsp;added&nbsp;label&nbsp;of&nbsp;1/z<br>&nbsp;&nbsp;so&nbsp;it&nbsp;easier&nbsp;to&nbsp;read&nbsp;under&nbsp;DAG<br>Added&nbsp;new&nbsp;node&nbsp;-&nbsp;Ncam2Nscr&nbsp;:<br>-&nbsp;convert&nbsp;Normal&nbsp;in&nbsp;camera&nbsp;space&nbsp;to&nbsp;screen&nbsp;space<br>-&nbsp;fresnel&nbsp;moved&nbsp;under&nbsp;this&nbsp;node<br><br>1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  BackdropNode {
@@ -63,363 +63,6 @@ Gizmo {
   ypos -270
   bdwidth 272
   bdheight 503
- }
- Reformat {
-  inputs 0
-  type "to box"
-  box_width {{global.res.x}}
-  box_height {{global.res.y}}
-  box_fixed true
-  box_pixel_aspect {{global.pxa}}
-  name Reformat1
-  xpos 755
-  ypos 1004
- }
- Text {
-  message "missing \[value parent.data] pass"
-  font "\[value parent.font]"
-  size {{global.res.x/15}}
-  xjustify center
-  yjustify center
-  Transform 1
-  box {0 0 {global.res.x} {global.res.y}}
-  center {640 360}
-  name Text1
-  xpos 755
-  ypos 1086
-  disable {{parent.disable_error}}
- }
- Reformat {
-  type "to box"
-  box_width {{global.res.x}}
-  box_height {{global.res.y}}
-  box_fixed true
-  box_pixel_aspect {{global.pxa}}
-  black_outside true
-  name Reformat2
-  xpos 755
-  ypos 1168
- }
- Dot {
-  name Dot5
-  xpos 789
-  ypos 1250
- }
- Input {
-  inputs 0
-  name position
-  xpos 404
-  ypos -536
- }
- Expression {
-  temp_name0 detectA
-  temp_expr0 "red == 0 && green == 0 && blue == 0 ? 0 : 1"
-  expr3 detectA
-  name Expression3
-  label "non-filtered alpha"
-  xpos 404
-  ypos -405
- }
- Dot {
-  name Dot1
-  xpos 438
-  ypos -173
- }
-set Nc9f69000 [stack 0]
- Dot {
-  name Dot4
-  xpos 594
-  ypos -173
- }
-set Nc9f68c00 [stack 0]
- Dot {
-  name Dot2
-  xpos 740
-  ypos -173
- }
-set Nc9f68800 [stack 0]
- Dot {
-  name Dot8
-  xpos 1043
-  ypos -173
- }
-set Nc9f68400 [stack 0]
- Dot {
-  name Dot20
-  xpos 1165
-  ypos -173
- }
-set Nc9f68000 [stack 0]
- Dot {
-  name Dot9
-  xpos 1310
-  ypos -173
- }
-set Nc9f83c00 [stack 0]
- Dot {
-  name Dot14
-  xpos 1611
-  ypos -173
- }
-set Nc9f83800 [stack 0]
- Dot {
-  name Dot17
-  xpos 1904
-  ypos -173
- }
-set Nc9f83400 [stack 0]
- Dot {
-  name Dot18
-  xpos 2075
-  ypos -173
- }
- Expression {
-  expr0 "1 / red"
-  expr1 "1 / red"
-  expr2 "1 / red"
-  name Expression2
-  xpos 2041
-  ypos -99
- }
- Expression {
-  expr0 "isnan(red) || isinf(red) ? 0 : red"
-  expr1 "isnan(green) || isinf(green) ? 0 : green"
-  expr2 "isnan(blue) || isinf(blue) ? 0 : blue"
-  name Expression5
-  label "remove nan&inf"
-  xpos 2041
-  ypos -17
- }
- Dot {
-  name Dot19
-  xpos 2075
-  ypos 367
- }
-push $Nc9f83400
- Switch {
-  inputs 2
-  which {{invert_depth}}
-  name Switch5
-  xpos 1870
-  ypos 449
- }
- Dot {
-  name Dot16
-  xpos 1904
-  ypos 531
- }
-push $Nc9f83800
- Shuffle {
-  red blue
-  green blue
-  name Shuffle2
-  xpos 1577
-  ypos 38
- }
- Invert {
-  channels rgb
-  name Invert2
-  xpos 1577
-  ypos 120
- }
- Premult {
-  name Premult2
-  xpos 1577
-  ypos 202
- }
- Dot {
-  name Dot15
-  xpos 1611
-  ypos 342
- }
-push $Nc9f83c00
- ColorMatrix {
-  matrix {
-      {{parent.world_matrix.0} {parent.world_matrix.1} {parent.world_matrix.2}}
-      {{parent.world_matrix.4} {parent.world_matrix.5} {parent.world_matrix.6}}
-      {{parent.world_matrix.8} {parent.world_matrix.9} {parent.world_matrix.10}}
-    }
-  invert true
-  name ColorMatrix2
-  label "invert deformation"
-  selected true
-  xpos 1276
-  ypos -99
- }
- Dot {
-  name Dot12
-  xpos 1310
-  ypos -5
- }
-set Nc9fa4400 [stack 0]
- Dot {
-  name Dot11
-  xpos 1461
-  ypos -5
- }
- Shuffle {
-  red blue
-  green blue
-  name Shuffle1
-  xpos 1427
-  ypos 93
- }
- Invert {
-  channels rgb
-  name Invert1
-  xpos 1427
-  ypos 175
- }
- Premult {
-  name Premult1
-  xpos 1427
-  ypos 257
- }
- Dot {
-  name Dot13
-  xpos 1461
-  ypos 339
- }
-push $Nc9fa4400
- Dot {
-  name Dot10
-  xpos 1310
-  ypos 337
- }
-push $Nc9f68000
- ColorMatrix {
-  matrix {
-      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
-      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
-      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
-    }
-  name ColorMatrix4
-  label transformation
-  xpos 1131
-  ypos -99
- }
- Dot {
-  name Dot21
-  xpos 1165
-  ypos 337
- }
-push $Nc9f68400
- Switch {
-  inputs 5
-  which {{"in_space == out_normal ? 0 : \nin_space == 0 && out_normal == 1 ? 2 : \nin_space == 1 && out_normal == 0 ? 1 : \nin_space == 0 && out_normal == 2 ? 3 : \n4"}}
-  name Switch4
-  xpos 1009
-  ypos 460
- }
- Dot {
-  name Dot7
-  xpos 1043
-  ypos 542
- }
-push $Nc9f68800
- Expression {
-  expr2 -blue
-  name Expression6
-  label "invert z"
-  xpos 706
-  ypos -99
- }
- ColorMatrix {
-  matrix {
-      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
-      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
-      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
-    }
-  name ColorMatrix3
-  label deformation
-  xpos 706
-  ypos -5
- }
- Add {
-  channels rgb
-  value {{parent.cam_data.world_matrix.3} {parent.cam_data.world_matrix.7} {parent.cam_data.world_matrix.11} {curve}}
-  maskChannelInput rgba.alpha
-  name Add3
-  label "invert translation"
-  xpos 706
-  ypos 101
-  bookmark true
- }
- Dot {
-  name Dot3
-  xpos 740
-  ypos 321
- }
-push $Nc9f68c00
- Add {
-  channels rgb
-  value {{-parent.cam_data.world_matrix.3} {-parent.cam_data.world_matrix.7} {-parent.cam_data.world_matrix.11} {curve}}
-  name Add1
-  label "invert translation"
-  xpos 560
-  ypos -99
-  bookmark true
- }
- ColorMatrix {
-  matrix {
-      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
-      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
-      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
-    }
-  invert true
-  name ColorMatrix1
-  label "invert deformation"
-  xpos 560
-  ypos -5
- }
- Expression {
-  expr2 -blue
-  name Expression1
-  label "invert z"
-  xpos 560
-  ypos 101
- }
- Dot {
-  name Dot6
-  xpos 594
-  ypos 317
- }
-push $Nc9f69000
- Switch {
-  inputs 3
-  which {{"in_space == out_position ? 0 : ( in_space == 0 && out_position == 1 ? 1 : 2 )"}}
-  name Switch2
-  xpos 404
-  ypos 453
- }
- Switch {
-  inputs 3
-  which {{parent.data}}
-  name Switch1
-  xpos 404
-  ypos 806
- }
- Expression {
-  expr0 "red * alpha"
-  expr1 "green * alpha"
-  expr2 "blue * alpha"
-  expr3 0
-  name Expression4
-  label "premult and cleanup"
-  xpos 404
-  ypos 929
- }
- Switch {
-  inputs 2
-  which {{"!\[exists parent.input0]"}}
-  name Switch3
-  xpos 404
-  ypos 1340
- }
- Output {
-  name Output1
-  xpos 404
-  ypos 1467
  }
  Group {
   inputs 0
@@ -518,5 +161,331 @@ push $Nc9f69000
   ypos -352
   addUserKnob {20 User}
   addUserKnob {83 data l "input data" M {position normal depth}}
+ }
+ Reformat {
+  inputs 0
+  type "to box"
+  box_width {{global.res.x}}
+  box_height {{global.res.y}}
+  box_fixed true
+  box_pixel_aspect {{global.pxa}}
+  name Reformat1
+  xpos 695
+  ypos 1106
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha white
+  name Shuffle2
+  xpos 695
+  ypos 1186
+ }
+ Text {
+  message "missing \[value parent.data] pass"
+  font "\[value parent.font]"
+  size {{global.res.x/15}}
+  xjustify center
+  yjustify center
+  Transform 1
+  box {0 0 {global.res.x} {global.res.y}}
+  center {640 360}
+  name Text1
+  xpos 695
+  ypos 1266
+  disable {{parent.disable_error}}
+ }
+ Reformat {
+  type "to box"
+  box_width {{global.res.x}}
+  box_height {{global.res.y}}
+  box_fixed true
+  box_pixel_aspect {{global.pxa}}
+  black_outside true
+  name Reformat2
+  xpos 695
+  ypos 1346
+ }
+ Dot {
+  name Dot5
+  xpos 729
+  ypos 1404
+ }
+ Input {
+  inputs 0
+  name position
+  xpos 404
+  ypos -536
+ }
+ Dot {
+  name Dot12
+  xpos 438
+  ypos -339
+ }
+set N72d60400 [stack 0]
+ Dot {
+  name Dot13
+  xpos 261
+  ypos -339
+ }
+ Dot {
+  name Dot11
+  xpos 261
+  ypos 1063
+ }
+push $N72d60400
+ Expression {
+  temp_name0 detectA
+  temp_expr0 "red == 0 && green == 0 && blue == 0 ? 0 : 1"
+  expr3 detectA
+  name Expression3
+  label "non-filtered alpha"
+  xpos 404
+  ypos -265
+ }
+ Dot {
+  name Dot1
+  xpos 438
+  ypos -173
+ }
+set N70378400 [stack 0]
+ Dot {
+  name Dot4
+  xpos 594
+  ypos -173
+ }
+set N70143c00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 740
+  ypos -173
+ }
+set N70143800 [stack 0]
+ Dot {
+  name Dot8
+  xpos 1043
+  ypos -173
+ }
+set N70143400 [stack 0]
+ Dot {
+  name Dot20
+  xpos 1165
+  ypos -173
+ }
+set N70143000 [stack 0]
+ Dot {
+  name Dot9
+  xpos 1310
+  ypos -173
+ }
+set N70142c00 [stack 0]
+ Dot {
+  name Dot17
+  xpos 1904
+  ypos -173
+ }
+set N70142400 [stack 0]
+ Dot {
+  name Dot18
+  xpos 2075
+  ypos -173
+ }
+ Expression {
+  expr0 "1 / red"
+  expr1 "1 / red"
+  expr2 "1 / red"
+  name Expression2
+  xpos 2041
+  ypos -99
+ }
+ Expression {
+  expr0 "isnan(red) || isinf(red) ? 0 : red"
+  expr1 "isnan(green) || isinf(green) ? 0 : green"
+  expr2 "isnan(blue) || isinf(blue) ? 0 : blue"
+  name Expression5
+  label "remove nan&inf"
+  xpos 2041
+  ypos -17
+ }
+ Dot {
+  name Dot19
+  xpos 2075
+  ypos 367
+ }
+push $N70142400
+ Switch {
+  inputs 2
+  which {{invert_depth}}
+  name Switch5
+  xpos 1870
+  ypos 449
+ }
+ Dot {
+  name Dot16
+  xpos 1904
+  ypos 531
+ }
+push $N70142c00
+ ColorMatrix {
+  matrix {
+      {{parent.world_matrix.0} {parent.world_matrix.1} {parent.world_matrix.2}}
+      {{parent.world_matrix.4} {parent.world_matrix.5} {parent.world_matrix.6}}
+      {{parent.world_matrix.8} {parent.world_matrix.9} {parent.world_matrix.10}}
+    }
+  invert true
+  name ColorMatrix2
+  label "invert deformation"
+  xpos 1276
+  ypos -99
+ }
+ Dot {
+  name Dot10
+  xpos 1310
+  ypos 337
+ }
+push $N70143000
+ ColorMatrix {
+  matrix {
+      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
+      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
+      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
+    }
+  name ColorMatrix4
+  label transformation
+  xpos 1131
+  ypos -99
+ }
+ Dot {
+  name Dot21
+  xpos 1165
+  ypos 337
+ }
+push $N70143400
+ Switch {
+  inputs 3
+  which {{"in_space == out_normal ? 0 : \nin_space == 0 && out_normal == 1 ? 2 : \nin_space == 1 && out_normal == 0 ? 1 : \n3"}}
+  name Switch4
+  xpos 1009
+  ypos 460
+ }
+ Dot {
+  name Dot7
+  xpos 1043
+  ypos 542
+ }
+push $N70143800
+ Expression {
+  expr2 -blue
+  name Expression6
+  label "invert z"
+  xpos 706
+  ypos -99
+ }
+ ColorMatrix {
+  matrix {
+      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
+      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
+      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
+    }
+  name ColorMatrix3
+  label deformation
+  xpos 706
+  ypos -5
+ }
+ Add {
+  channels rgb
+  value {{parent.cam_data.world_matrix.3} {parent.cam_data.world_matrix.7} {parent.cam_data.world_matrix.11} {curve}}
+  maskChannelInput rgba.alpha
+  name Add3
+  label "invert translation"
+  xpos 706
+  ypos 101
+  bookmark true
+ }
+ Dot {
+  name Dot3
+  xpos 740
+  ypos 321
+ }
+push $N70143c00
+ Add {
+  channels rgb
+  value {{-parent.cam_data.world_matrix.3} {-parent.cam_data.world_matrix.7} {-parent.cam_data.world_matrix.11} {curve}}
+  name Add1
+  label "invert translation"
+  xpos 560
+  ypos -99
+  bookmark true
+ }
+ ColorMatrix {
+  matrix {
+      {{parent.cam_data.world_matrix.0} {parent.cam_data.world_matrix.1} {parent.cam_data.world_matrix.2}}
+      {{parent.cam_data.world_matrix.4} {parent.cam_data.world_matrix.5} {parent.cam_data.world_matrix.6}}
+      {{parent.cam_data.world_matrix.8} {parent.cam_data.world_matrix.9} {parent.cam_data.world_matrix.10}}
+    }
+  invert true
+  name ColorMatrix1
+  label "invert deformation"
+  xpos 560
+  ypos -5
+ }
+ Expression {
+  expr2 -blue
+  name Expression1
+  label "invert z"
+  xpos 560
+  ypos 101
+ }
+ Dot {
+  name Dot6
+  xpos 594
+  ypos 317
+ }
+push $N70378400
+ Switch {
+  inputs 3
+  which {{"in_space == out_position ? 0 : ( in_space == 0 && out_position == 1 ? 1 : 2 )"}}
+  name Switch2
+  xpos 404
+  ypos 453
+ }
+ Switch {
+  inputs 3
+  which {{parent.data}}
+  name Switch1
+  xpos 404
+  ypos 806
+ }
+ Expression {
+  expr0 "red * alpha"
+  expr1 "green * alpha"
+  expr2 "blue * alpha"
+  expr3 0
+  name Expression4
+  label "premult and cleanup"
+  xpos 404
+  ypos 929
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 404
+  ypos 1054
+  disable {{"!\[exists parent.input0]"}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 404
+  ypos 1401
+  disable {{"\[exists parent.input0]"}}
+ }
+ Output {
+  name Output1
+  xpos 404
+  ypos 1531
  }
 end_group

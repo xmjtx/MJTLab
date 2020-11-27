@@ -31,12 +31,12 @@ Gizmo {
  addUserKnob {20 CamTabEnd l "" +STARTLINE n -3}
  addUserKnob {20 tab_misc l Misc}
  addUserKnob {2 font}
- font "C:/Program Files/Nuke12.0v3/plugins/fonts/UtopiaBold.pfa"
+ font "C:/Program Files/Nuke12.2v3/plugins/fonts/UtopiaBold.pfa"
  addUserKnob {6 disable_error l "disable onscreen message" +STARTLINE}
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l Version T 1.4}
- addUserKnob {26 l_DATE l "Date Modified" T 2020-01-21}
- addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue<br><br>1.2<br>-&nbsp;changed&nbsp;camera&nbsp;input&nbsp;to&nbsp;expression&nbsp;link<br>-&nbsp;fix&nbsp;alpha&nbsp;check<br>-&nbsp;added&nbsp;support&nbsp;camera&nbsp;window&nbsp;roll<br><br>1.0<br>-&nbsp;Convert&nbsp;Position&nbsp;data&nbsp;to&nbsp;Normal\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l Version T 1.5}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-11-25}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.5<br>global&nbsp;update&nbsp;:<br>-&nbsp;error&nbsp;detect&nbsp;flip&nbsp;update<br>-&nbsp;bring&nbsp;back&nbsp;alpha&nbsp;to&nbsp;downstream<br>ConvertPNZ&nbsp;:<br>-&nbsp;Normal&nbsp;conversion&nbsp;removed&nbsp;'fresnel'<br>P2Z&nbsp;:<br>-&nbsp;added&nbsp;label&nbsp;of&nbsp;1/z<br>&nbsp;&nbsp;so&nbsp;it&nbsp;easier&nbsp;to&nbsp;read&nbsp;under&nbsp;DAG<br>Added&nbsp;new&nbsp;node&nbsp;-&nbsp;Ncam2Nscr&nbsp;:<br>-&nbsp;convert&nbsp;Normal&nbsp;in&nbsp;camera&nbsp;space&nbsp;to&nbsp;screen&nbsp;space<br>-&nbsp;fresnel&nbsp;moved&nbsp;under&nbsp;this&nbsp;node<br><br>1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  BackdropNode {
@@ -58,8 +58,17 @@ Gizmo {
   box_fixed true
   box_pixel_aspect {{global.pxa}}
   name Reformat1
-  xpos 755
-  ypos 283
+  xpos 748
+  ypos 616
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha white
+  name Shuffle2
+  xpos 748
+  ypos 696
  }
  Text {
   message "missing depth pass"
@@ -71,8 +80,8 @@ Gizmo {
   box {0 0 {global.res.x} {global.res.y}}
   center {640 360}
   name Text1
-  xpos 755
-  ypos 365
+  xpos 748
+  ypos 776
   disable {{parent.disable_error}}
  }
  Reformat {
@@ -83,13 +92,13 @@ Gizmo {
   box_pixel_aspect {{global.pxa}}
   black_outside true
   name Reformat2
-  xpos 755
-  ypos 447
+  xpos 748
+  ypos 856
  }
  Dot {
   name Dot5
-  xpos 789
-  ypos 529
+  xpos 782
+  ypos 936
  }
  Input {
   inputs 0
@@ -97,6 +106,23 @@ Gizmo {
   xpos 404
   ypos -533
  }
+ Dot {
+  name Dot4
+  xpos 438
+  ypos -453
+ }
+set N7b805c00 [stack 0]
+ Dot {
+  name Dot6
+  xpos 250
+  ypos -453
+ }
+ Dot {
+  name Dot3
+  xpos 250
+  ypos 850
+ }
+push $N7b805c00
  Expression {
   temp_name0 detectA
   temp_expr0 "red == 0 && green == 0 && blue == 0 ? 0 : 1"
@@ -104,14 +130,14 @@ Gizmo {
   name Expression3
   label "non-filtered alpha"
   xpos 404
-  ypos -425
+  ypos -379
  }
  Dot {
   name Dot2
   xpos 438
-  ypos -343
+  ypos -297
  }
-set Ncb3cfc00 [stack 0]
+set N6fdea400 [stack 0]
  Expression {
   expr0 1/red
   expr1 0
@@ -119,15 +145,15 @@ set Ncb3cfc00 [stack 0]
   name Expression6
   label "depth invert"
   xpos 525
-  ypos -297
+  ypos -251
  }
-push $Ncb3cfc00
+push $N6fdea400
  Switch {
   inputs 2
   which {{depth_invert}}
   name Switch1
   xpos 404
-  ypos -236
+  ypos -190
  }
  Expression {
   temp_name0 posX
@@ -142,7 +168,7 @@ push $Ncb3cfc00
   name Expression7
   label "depth to position"
   xpos 404
-  ypos -130
+  ypos -84
  }
  Expression {
   temp_name0 shiftX
@@ -153,24 +179,23 @@ push $Ncb3cfc00
   expr1 "( red * inverseMatrix.invMatrix.3 + green * inverseMatrix.invMatrix.4 ) * parent.cam_win_scale.v + shiftY"
   name Expression5
   label "apply camera window"
-  selected true
   xpos 404
-  ypos -36
+  ypos 10
  }
  Dot {
   name Dot1
   xpos 438
-  ypos 135
+  ypos 181
  }
-set Ncb3ce800 [stack 0]
+set N6fde9000 [stack 0]
  Expression {
   expr2 -blue
   name Expression4
   label "depth in blue"
   xpos 561
-  ypos 260
+  ypos 306
  }
-push $Ncb3ce800
+push $N6fde9000
  ColorMatrix {
   matrix {
       {{parent.world_matrix.0} {parent.world_matrix.1} {parent.world_matrix.2}}
@@ -180,7 +205,7 @@ push $Ncb3ce800
   name ColorMatrix1
   label "rotate world"
   xpos 404
-  ypos 209
+  ypos 255
  }
  Add {
   channels rgb
@@ -188,14 +213,14 @@ push $Ncb3ce800
   name Add1
   label "translate world"
   xpos 404
-  ypos 291
+  ypos 337
  }
  Switch {
   inputs 2
   which {{parent.pos_space}}
   name Switch2
   xpos 404
-  ypos 373
+  ypos 419
  }
  Expression {
   expr0 "isnan(red) || isinf(red) ? 0 : red"
@@ -204,7 +229,7 @@ push $Ncb3ce800
   name Expression2
   label "remove nan&inf"
   xpos 404
-  ypos 455
+  ypos 501
  }
  Expression {
   expr0 "red * alpha"
@@ -214,19 +239,28 @@ push $Ncb3ce800
   name Expression1
   label "premult non-filter alpha"
   xpos 404
-  ypos 537
+  ypos 583
  }
- Switch {
+ Copy {
   inputs 2
-  which {{"!\[exists parent.input0]"}}
-  name Switch3
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
   xpos 404
-  ypos 619
+  ypos 841
+  disable {{"!\[exists parent.input0]"}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 404
+  ypos 933
+  disable {{"\[exists parent.input0]"}}
  }
  Output {
   name Output1
   xpos 404
-  ypos 746
+  ypos 1060
  }
  Group {
   inputs 0

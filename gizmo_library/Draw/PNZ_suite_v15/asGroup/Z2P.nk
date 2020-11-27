@@ -1,14 +1,14 @@
-Gizmo {
- name P2Z
+Group {
+ name Z2P
  onCreate "\nthisGRP = nuke.thisGroup()\nif not thisGRP\['disable_error'].getValue() :\n    import os\n    import re\n\n    fontpath = re.split( '/|\"\"' , nuke.EXE_PATH )\n    fontpath.pop()\n    fontpath += \['plugins','fonts']\n    \n    if os.path.isfile( '/'.join( fontpath + \['UtopiaBold.pfa'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['UtopiaBold.pfa'] ) )\n    elif os.path.isfile( '/'.join( fontpath + \['CourierBold.pfa'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['CourierBold.pfa'] ) )\n    elif os.path.isfile( '/'.join( fontpath + \['Courier10PitchBold.pfb'] ) ) :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['Courier10PitchBold.pfb'] ) )\n    else :\n        thisGRP\['font'].setValue( '/'.join( fontpath + \['BitstreamCharterBold.pfb'] ) )\n"
  tile_color 0x7f0072ff
- label "output : depth"
+ label "output : position(\[value pos_space])"
  addUserKnob {20 general l General}
  addUserKnob {26 title_in l <b>INPUT</b>}
- addUserKnob {4 pos_space l "position space" M {world camera}}
- addUserKnob {26 title_out l <b>OUTPUT</b>}
  addUserKnob {6 depth_invert l "depth (1/z)" +STARTLINE}
  depth_invert true
+ addUserKnob {26 title_out l <b>OUTPUT</b>}
+ addUserKnob {4 pos_space l "position space" M {world camera}}
  addUserKnob {26 spacer l "" +STARTLINE T <br>}
  addUserKnob {20 CamTabBegin l "" +STARTLINE n -2}
  addUserKnob {20 tab_cam_setup l "Camera Setup"}
@@ -31,12 +31,12 @@ Gizmo {
  addUserKnob {20 CamTabEnd l "" +STARTLINE n -3}
  addUserKnob {20 tab_misc l Misc}
  addUserKnob {2 font}
- font "C:/Program Files/Nuke12.0v3/plugins/fonts/UtopiaBold.pfa"
+ font "C:/Program Files/Nuke12.2v3/plugins/fonts/UtopiaBold.pfa"
  addUserKnob {6 disable_error l "disable onscreen message" +STARTLINE}
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l Version T 1.4}
- addUserKnob {26 l_DATE l "Date Modified" T 2020-01-21}
- addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue<br><br>1.2<br>-&nbsp;changed&nbsp;camera&nbsp;input&nbsp;to&nbsp;expression&nbsp;link<br>-&nbsp;fix&nbsp;alpha&nbsp;check<br>-&nbsp;added&nbsp;support&nbsp;camera&nbsp;window&nbsp;roll<br><br>1.0<br>-&nbsp;Convert&nbsp;Position&nbsp;data&nbsp;to&nbsp;Normal\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l Version T 1.5}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-11-25}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"1.5<br>global&nbsp;update&nbsp;:<br>-&nbsp;error&nbsp;detect&nbsp;flip&nbsp;update<br>-&nbsp;bring&nbsp;back&nbsp;alpha&nbsp;to&nbsp;downstream<br>ConvertPNZ&nbsp;:<br>-&nbsp;Normal&nbsp;conversion&nbsp;removed&nbsp;'fresnel'<br>P2Z&nbsp;:<br>-&nbsp;added&nbsp;label&nbsp;of&nbsp;1/z<br>&nbsp;&nbsp;so&nbsp;it&nbsp;easier&nbsp;to&nbsp;read&nbsp;under&nbsp;DAG<br>Added&nbsp;new&nbsp;node&nbsp;-&nbsp;Ncam2Nscr&nbsp;:<br>-&nbsp;convert&nbsp;Normal&nbsp;in&nbsp;camera&nbsp;space&nbsp;to&nbsp;screen&nbsp;space<br>-&nbsp;fresnel&nbsp;moved&nbsp;under&nbsp;this&nbsp;node<br><br>1.4<br>-&nbsp;a&nbsp;package&nbsp;convert&nbsp;3D&nbsp;tech&nbsp;passes<br>&nbsp;&nbsp;included<br>&nbsp;&nbsp;*&nbsp;P2Z&nbsp;(&nbsp;Position&nbsp;To&nbsp;Depth&nbsp;)<br>&nbsp;&nbsp;*&nbsp;P2N&nbsp;(&nbsp;Position&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2P&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Position&nbsp;)<br>&nbsp;&nbsp;*&nbsp;Z2N&nbsp;(&nbsp;Depth&nbsp;To&nbsp;Normal&nbsp;)<br>&nbsp;&nbsp;*&nbsp;ConvertPNZ&nbsp;(&nbsp;self&nbsp;convertion&nbsp;)<br>-&nbsp;fixed&nbsp;camera&nbsp;window&nbsp;transformation&nbsp;issue\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  BackdropNode {
@@ -58,11 +58,20 @@ Gizmo {
   box_fixed true
   box_pixel_aspect {{global.pxa}}
   name Reformat1
-  xpos 755
-  ypos 434
+  xpos 748
+  ypos 616
+ }
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha white
+  name Shuffle2
+  xpos 748
+  ypos 696
  }
  Text {
-  message "missing position pass"
+  message "missing depth pass"
   font "\[value parent.font]"
   size {{global.res.x/15}}
   xjustify center
@@ -71,8 +80,8 @@ Gizmo {
   box {0 0 {global.res.x} {global.res.y}}
   center {640 360}
   name Text1
-  xpos 755
-  ypos 516
+  xpos 748
+  ypos 776
   disable {{parent.disable_error}}
  }
  Reformat {
@@ -83,20 +92,37 @@ Gizmo {
   box_pixel_aspect {{global.pxa}}
   black_outside true
   name Reformat2
-  xpos 755
-  ypos 598
+  xpos 748
+  ypos 856
  }
  Dot {
   name Dot5
-  xpos 789
-  ypos 680
+  xpos 782
+  ypos 936
  }
  Input {
   inputs 0
-  name position
+  name depth
   xpos 404
-  ypos -534
+  ypos -533
  }
+ Dot {
+  name Dot4
+  xpos 438
+  ypos -453
+ }
+set N7b805c00 [stack 0]
+ Dot {
+  name Dot6
+  xpos 250
+  ypos -453
+ }
+ Dot {
+  name Dot3
+  xpos 250
+  ypos 850
+ }
+push $N7b805c00
  Expression {
   temp_name0 detectA
   temp_expr0 "red == 0 && green == 0 && blue == 0 ? 0 : 1"
@@ -104,115 +130,106 @@ Gizmo {
   name Expression3
   label "non-filtered alpha"
   xpos 404
-  ypos -427
+  ypos -379
  }
  Dot {
-  name Dot8
+  name Dot2
   xpos 438
-  ypos -344
+  ypos -297
  }
-set Nca141400 [stack 0]
- Dot {
-  name Dot6
-  xpos 665
-  ypos -344
+set N6fdea400 [stack 0]
+ Expression {
+  expr0 1/red
+  expr1 0
+  expr2 0
+  name Expression6
+  label "depth invert"
+  xpos 525
+  ypos -251
+ }
+push $N6fdea400
+ Switch {
+  inputs 2
+  which {{depth_invert}}
+  name Switch1
+  xpos 404
+  ypos -190
  }
  Expression {
-  expr0 blue
-  expr1 blue
-  expr2 blue
+  temp_name0 posX
+  temp_expr0 "( x/global.res.x - 0.5) * ( global.hratio * red )"
+  temp_name1 posY
+  temp_expr1 "( y/global.res.y - 0.5) * ( global.hratio * global.res.y/global.res.x * red )"
+  temp_name2 posZ
+  temp_expr2 -red
+  expr0 posX
+  expr1 posY
+  expr2 posZ
+  name Expression7
+  label "depth to position"
+  xpos 404
+  ypos -84
+ }
+ Expression {
+  temp_name0 shiftX
+  temp_expr0 "global.hratio * abs( blue ) * parent.cam_win_translate.u / 2"
+  temp_name1 shiftY
+  temp_expr1 "global.hratio * abs( blue ) * parent.cam_win_translate.v / 2"
+  expr0 "( red * inverseMatrix.invMatrix.0 + green * inverseMatrix.invMatrix.1 ) * parent.cam_win_scale.u + shiftX"
+  expr1 "( red * inverseMatrix.invMatrix.3 + green * inverseMatrix.invMatrix.4 ) * parent.cam_win_scale.v + shiftY"
   name Expression5
-  label "depth from position (cam)"
-  xpos 631
-  ypos -270
+  label "apply camera window"
+  xpos 404
+  ypos 10
  }
  Dot {
-  name Dot3
-  xpos 665
-  ypos 135
+  name Dot1
+  xpos 438
+  ypos 181
  }
-push $Nca141400
- Add {
-  channels rgb
-  value {{-parent.world_matrix.3} {-parent.world_matrix.7} {-parent.world_matrix.11} 0}
-  name Add2
-  label "invert translation"
-  xpos 404
-  ypos -270
-  bookmark true
+set N6fde9000 [stack 0]
+ Expression {
+  expr2 -blue
+  name Expression4
+  label "depth in blue"
+  xpos 561
+  ypos 306
  }
+push $N6fde9000
  ColorMatrix {
   matrix {
       {{parent.world_matrix.0} {parent.world_matrix.1} {parent.world_matrix.2}}
       {{parent.world_matrix.4} {parent.world_matrix.5} {parent.world_matrix.6}}
       {{parent.world_matrix.8} {parent.world_matrix.9} {parent.world_matrix.10}}
     }
-  invert true
-  name ColorMatrix2
-  label "invert transformation"
+  name ColorMatrix1
+  label "rotate world"
   xpos 404
-  ypos -164
+  ypos 255
  }
- Expression {
-  temp_name0 newR
-  temp_expr0 "( red - ( global.hratio * abs( blue ) * parent.cam_win_translate.u / 2 ) ) * 1 / parent.cam_win_scale.u"
-  temp_name1 newG
-  temp_expr1 "( green - ( global.hratio * abs( blue ) * parent.cam_win_translate.v /2 ) ) * 1 / parent.cam_win_scale.v"
-  expr0 "newR * fb_data.world_matrix.0 + newG * fb_data.world_matrix.1"
-  expr1 "newR * fb_data.world_matrix.4 + newG * fb_data.world_matrix.5"
-  name Expression4
-  label "invert camera window"
+ Add {
+  channels rgb
+  value {{parent.world_matrix.3} {parent.world_matrix.7} {parent.world_matrix.11} 0}
+  name Add1
+  label "translate world"
   xpos 404
-  ypos -54
- }
- Expression {
-  expr0 "abs( blue )"
-  expr1 "abs( blue )"
-  expr2 "abs( blue )"
-  name Expression7
-  label "keep Z"
-  selected true
-  xpos 404
-  ypos 40
+  ypos 337
  }
  Switch {
   inputs 2
   which {{parent.pos_space}}
-  name Switch6
+  name Switch2
   xpos 404
-  ypos 218
- }
- Dot {
-  name Dot2
-  xpos 438
-  ypos 324
- }
-set Nca16f000 [stack 0]
- Expression {
-  expr0 1/red
-  expr1 1/green
-  expr2 1/blue
-  name Expression6
-  label "depth invert"
-  xpos 521
-  ypos 371
- }
-push $Nca16f000
- Switch {
-  inputs 2
-  which {{depth_invert}}
-  name Switch1
-  xpos 404
-  ypos 432
+  ypos 419
  }
  Expression {
-  expr0 "isnan(r) || isinf(r) ? 0 : r"
-  expr1 "isnan(g) || isinf(g) ? 0 : g"
-  expr2 "isnan(b) || isinf(b) ? 0 : b"
+  expr0 "isnan(red) || isinf(red) ? 0 : red"
+  expr1 "isnan(green) || isinf(green) ? 0 : green"
+  expr2 "isnan(blue) || isinf(blue) ? 0 : blue"
   name Expression2
   label "remove nan&inf"
   xpos 404
-  ypos 514
+  ypos 501
  }
  Expression {
   expr0 "red * alpha"
@@ -222,19 +239,28 @@ push $Nca16f000
   name Expression1
   label "premult non-filter alpha"
   xpos 404
-  ypos 608
+  ypos 583
  }
- Switch {
+ Copy {
   inputs 2
-  which {{"!\[exists parent.input0]"}}
-  name Switch3
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
   xpos 404
-  ypos 770
+  ypos 841
+  disable {{"!\[exists parent.input0]"}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 404
+  ypos 933
+  disable {{"\[exists parent.input0]"}}
  }
  Output {
   name Output1
   xpos 404
-  ypos 897
+  ypos 1060
  }
  Group {
   inputs 0
@@ -294,29 +320,29 @@ push $Nca16f000
    ypos 33
   }
  end_group
- Axis {
-  inputs 0
-  display off
-  selectable false
-  rotate {0 0 {parent.cam_winroll}}
-  name fb_data
-  xpos -90
-  ypos -194
- }
  Camera {
   inputs 0
   display off
   selectable false
   useMatrix true
   name cam_data
-  xpos 13
+  xpos 14
   ypos -195
+ }
+ Axis {
+  inputs 0
+  display off
+  selectable false
+  rotate {0 0 {parent.cam_winroll}}
+  name fb_data
+  xpos -95
+  ypos -193
  }
  NoOp {
   inputs 0
   name global
-  xpos -107
-  ypos -295
+  xpos -105
+  ypos -294
   addUserKnob {20 User}
   addUserKnob {12 res}
   res {{"\[exists parent.input0] ? parent.input0.width : width"} {"\[exists parent.input0] ? parent.input0.height : height"}}
