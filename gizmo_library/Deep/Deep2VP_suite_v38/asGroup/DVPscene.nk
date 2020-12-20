@@ -1,0 +1,69 @@
+Group {
+ name DVPscene
+ tile_color 0x597fff
+ label "<font color=cyan>Deep Output</font>"
+ addUserKnob {20 tab_general l General}
+ addUserKnob {7 light_shading l "light shading" t "Combine the original color in diffuse."}
+ light_shading 0.1
+ addUserKnob {41 ambient T menu01.ambient}
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l <b>Version</b> T 3.8}
+ addUserKnob {26 l_DATE l "<b>Date Modified</b>" T 2020-12-17}
+ addUserKnob {22 btn_CHANGELOG l <b>Changlelog</b> T "log = \"3.8<br>Deep2VPosition<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;for&nbsp;DVPmatte's&nbsp;multi&nbsp;matte&nbsp;color&nbsp;fix.<br><br>DVPmatte<br>-&nbsp;removed&nbsp;2&nbsp;impractical&nbsp;operations<br>-&nbsp;removed&nbsp;falloff&nbsp;type&nbsp;selection,&nbsp;use&nbsp;exponential&nbsp;setting&nbsp;instead<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;to&nbsp;fix&nbsp;multi&nbsp;mattes&nbsp;process<br><br>DVProjection<br>-&nbsp;link&nbsp;camera&nbsp;to&nbsp;use&nbsp;world&nbsp;matrix&nbsp;instead&nbsp;of&nbsp;transformation&nbsp;knobs<br>-&nbsp;removed&nbsp;scale&nbsp;and&nbsp;skew<br>-&nbsp;supported&nbsp;output&nbsp;deepNormal&nbsp;channel&nbsp;correctly&nbsp;(can&nbsp;be&nbsp;find&nbsp;on&nbsp;Misc&nbsp;tab)<br><br>DVPsetLight<br>-&nbsp;fixed&nbsp;the&nbsp;conflict&nbsp;if&nbsp;deep&nbsp;normal&nbsp;pass&nbsp;under&nbsp;deepNormal&nbsp;channel&nbsp;from&nbsp;input<br>-&nbsp;fixed&nbsp;'generated&nbsp;normal'&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;added&nbsp;input&nbsp;2D&nbsp;normal&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;input&nbsp;deep&nbsp;normal&nbsp;channel&nbsp;default&nbsp;changed&nbsp;to&nbsp;'deepNormal'&nbsp;<br><br>DVPrelight<br>-&nbsp;remove&nbsp;unnecessary&nbsp;knobs&nbsp;under&nbsp;different&nbsp;types&nbsp;of&nbsp;light,&nbsp;make&nbsp;interface&nbsp;clear<br>-&nbsp;point&nbsp;light&nbsp;update&nbsp;more&nbsp;accurate&nbsp;algorithm<br>-&nbsp;simplify&nbsp;falloff&nbsp;option&nbsp;on&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light<br>-&nbsp;pointcloud&nbsp;preview&nbsp;update,&nbsp;show&nbsp;the&nbsp;input&nbsp;color<br>-&nbsp;added&nbsp;world&nbsp;scale&nbsp;unit&nbsp;under&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light,&nbsp;this&nbsp;related&nbsp;to&nbsp;light&nbsp;intensity<br>-&nbsp;optimize&nbsp;the&nbsp;setup&nbsp;of&nbsp;point&nbsp;light.&nbsp;The&nbsp;node&nbsp;much&nbsp;lighter<br><br>DVPfresnel<br>-&nbsp;fixed&nbsp;fresnel&nbsp;output&nbsp;in&nbsp;screen&nbsp;space<br>-&nbsp;added&nbsp;unpremult&nbsp;before&nbsp;process<br>-&nbsp;replace&nbsp;gamma&nbsp;to&nbsp;exponential<br><br>DVPscene<br>-&nbsp;'mix'&nbsp;knob&nbsp;name&nbsp;changed&nbsp;to&nbsp;'light_shading'<br><br>DVPToImage<br>-&nbsp;due&nbsp;to&nbsp;DVPsetLight&nbsp;update,&nbsp;it&nbsp;output&nbsp;deepNormal&nbsp;correctly.<br>-&nbsp;added&nbsp;remove&nbsp;the&nbsp;metadata&nbsp;created&nbsp;from&nbsp;Deep2VPosition\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "<b>Developed by</b>" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0xff
+  label "dont touch"
+  note_font_size 42
+  xpos -463
+  ypos -360
+  bdwidth 316
+  bdheight 274
+ }
+ NoOp {
+  inputs 0
+  name menu01
+  knobChanged "\nthisN = nuke.thisNode()\nfor knob in thisN.knobs() :\n    try :\n        if knob.split('_')\[1] == 'panelDropped' :\n            thisN.removeKnob( thisN\[knob] )\n    except :\n        pass\n"
+  xpos -349
+  ypos -225
+  addUserKnob {20 User}
+  addUserKnob {18 ambient}
+  ambient {0 0 0}
+  addUserKnob {6 ambient_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ }
+ Input {
+  inputs 0
+  name deep
+  xpos -64
+  ypos -410
+ }
+add_layer {deepRawColor deepRawColor.red deepRawColor.green deepRawColor.blue deepRawColor.alpha}
+ DeepExpression {
+  chans0 {deepRawColor.red deepRawColor.green deepRawColor.blue none}
+  chans1 none
+  deepRawColor.red "deepRawColor.red + \[value parent.ambient.r]"
+  deepRawColor.green "deepRawColor.green + \[value parent.ambient.g]"
+  deepRawColor.blue "deepRawColor.blue + \[value parent.ambient.b]"
+  name DeepExpression4
+  xpos -64
+  ypos -273
+ }
+ DeepExpression {
+  chans1 none
+  rgba.red "deepRawColor.red * red + deepRawColor.red * clamp( \[value parent.light_shading] )"
+  rgba.green "deepRawColor.green * green + deepRawColor.green * clamp( \[value parent.light_shading] )"
+  rgba.blue "deepRawColor.blue * blue + deepRawColor.blue * clamp( \[value parent.light_shading] )"
+  name DeepExpression1
+  selected true
+  xpos -64
+  ypos -191
+ }
+ Output {
+  name Output1
+  xpos -64
+  ypos -42
+ }
+end_group

@@ -1,4 +1,4 @@
-Group {
+Gizmo {
  name DVPattern
  tile_color 0x597fff
  label "<font color=cyan>Deep Output</font>"
@@ -40,9 +40,9 @@ Group {
  addUserKnob {41 pointSize l "point size" T deepPositionToPoints.pointSize}
  addUserKnob {20 endGroup n -1}
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l <b>Version</b> T 3.7}
- addUserKnob {26 l_DATE l "<b>Date Modified</b>" T 2020-01-09}
- addUserKnob {22 btn_CHANGELOG l <b>Changlelog</b> T "log = \"3.7<br>Toolset&nbsp;update&nbsp;:<br>&nbsp;&nbsp;'DVPort'<br>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;added&nbsp;'near'&nbsp;&&nbsp;'far&nbsp;knobs<br>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;capable&nbsp;with&nbsp;'DeepBoolean'&nbsp;v1.4<br>&nbsp;&nbsp;'DVPmatte'<br>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;fixed&nbsp;missing&nbsp;premult&nbsp;original&nbsp;alpha&nbsp;process<br>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;capable&nbsp;with&nbsp;'DeepBoolean'&nbsp;v1.4<br>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;revert&nbsp;uniform_scale&nbsp;default&nbsp;value&nbsp;back&nbsp;to&nbsp;1.0<br><br>3.6<br>'DVPsetLight'<br>-&nbsp;improved&nbsp;'generated&nbsp;normal&nbsp;(estimate&nbsp;from&nbsp;position)'&nbsp;and&nbsp;changed&nbsp;to&nbsp;blink&nbsp;script.&nbsp;Get&nbsp;better&nbsp;edges&nbsp;on&nbsp;deepNormal.<br><br>3.5<br>Global&nbsp;update&nbsp;:<br>&nbsp;&nbsp;-&nbsp;Main&nbsp;node&nbsp;'DeepToPosition'&nbsp;rename&nbsp;to&nbsp;'Deep2VPosition'<br>&nbsp;&nbsp;-&nbsp;All&nbsp;tools&nbsp;nodes&nbsp;name&nbsp;changed&nbsp;to&nbsp;'DVP'&nbsp;initial<br>&nbsp;&nbsp;-&nbsp;all&nbsp;pointcloud&nbsp;preview&nbsp;added&nbsp;3&nbsp;options.&nbsp;'none'&nbsp;,&nbsp;'raw&nbsp;pointcloud'&nbsp;and&nbsp;'with&nbsp;effect&nbsp;applied'<br>&nbsp;&nbsp;-&nbsp;*&nbsp;All&nbsp;toolset&nbsp;removed&nbsp;nuke10&nbsp;support<br>&nbsp;&nbsp;-&nbsp;Added&nbsp;2&nbsp;more&nbsp;options&nbsp;to&nbsp;all&nbsp;nodes&nbsp;have&nbsp;expression&nbsp;link&nbsp;setup&nbsp;.&nbsp;'bake&nbsp;expression&nbsp;link'&nbsp;&&nbsp;'copy&nbsp;from&nbsp;selected&nbsp;node'<br>&nbsp;&nbsp;-&nbsp;New&nbsp;tools&nbsp;:&nbsp;&nbsp;'D2VPort'&nbsp;,&nbsp;'DVPsetLight'&nbsp;,&nbsp;'DVPrelight'&nbsp;,&nbsp;'DVPfresnel'&nbsp;&&nbsp;'DVPscene'<br><br>Toolset&nbsp;update&nbsp;:<br>&nbsp;&nbsp;&nbsp;&nbsp;'DVPToImage'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;added&nbsp;'keep&nbsp;deepPosition'&nbsp;&&nbsp;'keep&nbsp;deepNormal'<br>&nbsp;&nbsp;&nbsp;&nbsp;'DVPmatte'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;support&nbsp;multi&nbsp;mattes<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;added&nbsp;multi&nbsp;mattes&nbsp;operation<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;no&nbsp;more&nbsp;2D&nbsp;output&nbsp;(because&nbsp;of&nbsp;disconnect&nbsp;issue&nbsp;but&nbsp;replaced&nbsp;by&nbsp;black&white&nbsp;matte&nbsp;option)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;added&nbsp;file&nbsp;import&nbsp;for&nbsp;chan&nbsp;file<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Fixed&nbsp;samples&nbsp;cleanup&nbsp;setup&nbsp;on&nbsp;nuke&nbsp;11+.&nbsp;Process&nbsp;faster&nbsp;now<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;improved&nbsp;exponential&nbsp;algorithm<br>&nbsp;&nbsp;&nbsp;&nbsp;'DVPattern'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;fix&nbsp;the&nbsp;center&nbsp;origin&nbsp;of&nbsp;translation.&nbsp;Especially&nbsp;can&nbsp;see&nbsp;the&nbsp;difference&nbsp;on&nbsp;strips,&nbsp;ripple&nbsp;and&nbsp;ray&nbsp;pattern<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Added&nbsp;snap&nbsp;and&nbsp;file&nbsp;import&nbsp;function<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;fix&nbsp;the&nbsp;algorithm&nbsp;of&nbsp;mix.&nbsp;Color&nbsp;get&nbsp;darker&nbsp;when&nbsp;mix&nbsp;was&nbsp;0.0&nbsp;and&nbsp;clamp&nbsp;the&nbsp;mix&nbsp;value<br>&nbsp;&nbsp;&nbsp;&nbsp;'DVProjection'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;fix&nbsp;framehold&nbsp;issue&nbsp;when&nbsp;focal&nbsp;or&nbsp;haperture&nbsp;is&nbsp;animated&nbsp;in&nbsp;camera<br><br>*&nbsp;Before&nbsp;Nuke&nbsp;11.3,&nbsp;there&nbsp;has&nbsp;a&nbsp;lot&nbsp;of&nbsp;deep&nbsp;api&nbsp;change&nbsp;and&nbsp;bug&nbsp;fixes&nbsp;involved&nbsp;from&nbsp;Foundry.&nbsp;Only&nbsp;'Deep2VPosition'&nbsp;and&nbsp;'DVPToImage'&nbsp;still&nbsp;work&nbsp;properly&nbsp;with&nbsp;nuke10.&nbsp;So&nbsp;if&nbsp;worked&nbsp;with&nbsp;Nuke10,&nbsp;suggested&nbsp;to&nbsp;output&nbsp;deepPosition&nbsp;channel&nbsp;by&nbsp;these&nbsp;2&nbsp;nodes&nbsp;and&nbsp;use&nbsp;any&nbsp;position&nbsp;tools&nbsp;in&nbsp;2D.<br><br>toolset&nbsp;tested&nbsp;on&nbsp;Nuke&nbsp;10.5,&nbsp;11.2v2,&nbsp;11.3v1,&nbsp;12.0v1,&nbsp;12.0v3<br>11.2&nbsp;might&nbsp;crash&nbsp;after&nbsp;setup&nbsp;expression&nbsp;link,&nbsp;but&nbsp;it&nbsp;will&nbsp;be&nbsp;fine&nbsp;when&nbsp;re-open&nbsp;the&nbsp;script.\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l <b>Version</b> T 3.8}
+ addUserKnob {26 l_DATE l "<b>Date Modified</b>" T 2020-12-17}
+ addUserKnob {22 btn_CHANGELOG l <b>Changlelog</b> T "log = \"3.8<br>Deep2VPosition<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;for&nbsp;DVPmatte's&nbsp;multi&nbsp;matte&nbsp;color&nbsp;fix.<br><br>DVPmatte<br>-&nbsp;removed&nbsp;2&nbsp;impractical&nbsp;operations<br>-&nbsp;removed&nbsp;falloff&nbsp;type&nbsp;selection,&nbsp;use&nbsp;exponential&nbsp;setting&nbsp;instead<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;to&nbsp;fix&nbsp;multi&nbsp;mattes&nbsp;process<br><br>DVProjection<br>-&nbsp;link&nbsp;camera&nbsp;to&nbsp;use&nbsp;world&nbsp;matrix&nbsp;instead&nbsp;of&nbsp;transformation&nbsp;knobs<br>-&nbsp;removed&nbsp;scale&nbsp;and&nbsp;skew<br>-&nbsp;supported&nbsp;output&nbsp;deepNormal&nbsp;channel&nbsp;correctly&nbsp;(can&nbsp;be&nbsp;find&nbsp;on&nbsp;Misc&nbsp;tab)<br><br>DVPsetLight<br>-&nbsp;fixed&nbsp;the&nbsp;conflict&nbsp;if&nbsp;deep&nbsp;normal&nbsp;pass&nbsp;under&nbsp;deepNormal&nbsp;channel&nbsp;from&nbsp;input<br>-&nbsp;fixed&nbsp;'generated&nbsp;normal'&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;added&nbsp;input&nbsp;2D&nbsp;normal&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;input&nbsp;deep&nbsp;normal&nbsp;channel&nbsp;default&nbsp;changed&nbsp;to&nbsp;'deepNormal'&nbsp;<br><br>DVPrelight<br>-&nbsp;remove&nbsp;unnecessary&nbsp;knobs&nbsp;under&nbsp;different&nbsp;types&nbsp;of&nbsp;light,&nbsp;make&nbsp;interface&nbsp;clear<br>-&nbsp;point&nbsp;light&nbsp;update&nbsp;more&nbsp;accurate&nbsp;algorithm<br>-&nbsp;simplify&nbsp;falloff&nbsp;option&nbsp;on&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light<br>-&nbsp;pointcloud&nbsp;preview&nbsp;update,&nbsp;show&nbsp;the&nbsp;input&nbsp;color<br>-&nbsp;added&nbsp;world&nbsp;scale&nbsp;unit&nbsp;under&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light,&nbsp;this&nbsp;related&nbsp;to&nbsp;light&nbsp;intensity<br>-&nbsp;optimize&nbsp;the&nbsp;setup&nbsp;of&nbsp;point&nbsp;light.&nbsp;The&nbsp;node&nbsp;much&nbsp;lighter<br><br>DVPfresnel<br>-&nbsp;fixed&nbsp;fresnel&nbsp;output&nbsp;in&nbsp;screen&nbsp;space<br>-&nbsp;added&nbsp;unpremult&nbsp;before&nbsp;process<br>-&nbsp;replace&nbsp;gamma&nbsp;to&nbsp;exponential<br><br>DVPscene<br>-&nbsp;'mix'&nbsp;knob&nbsp;name&nbsp;changed&nbsp;to&nbsp;'light_shading'<br><br>DVPToImage<br>-&nbsp;due&nbsp;to&nbsp;DVPsetLight&nbsp;update,&nbsp;it&nbsp;output&nbsp;deepNormal&nbsp;correctly.<br>-&nbsp;added&nbsp;remove&nbsp;the&nbsp;metadata&nbsp;created&nbsp;from&nbsp;Deep2VPosition\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "<b>Developed by</b>" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  BackdropNode {
@@ -84,7 +84,7 @@ Group {
   xpos -750
   ypos -27
  }
-set N59afc400 [stack 0]
+set N2d52d800 [stack 0]
 add_layer {deepPosition deepPosition.red deepPosition.green deepPosition.blue deepPosition.alpha}
  DeepExpression {
   temp_name0 pnx
@@ -101,7 +101,7 @@ add_layer {deepPosition deepPosition.red deepPosition.green deepPosition.blue de
   xpos -417
   ypos 52
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale]*\[value parent.n_scale.x] ) )"
@@ -117,7 +117,7 @@ push $N59afc400
   xpos -540
   ypos 57
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "\[value status_x] == 0 ? 0 : ( sin( ( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale] * \[value parent.n_scale.x] ) ) ) + 1 ) / 2"
@@ -140,7 +140,7 @@ push $N59afc400
   addUserKnob {7 status_z}
   status_z {{parent.stripes_z}}
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale] * \[value parent.n_scale.x] ) )"
@@ -156,7 +156,7 @@ push $N59afc400
   xpos -784
   ypos 59
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale] * \[value parent.n_scale.x] ) )"
@@ -172,7 +172,7 @@ push $N59afc400
   xpos -902
   ypos 63
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale] * \[value parent.n_scale.x] ) )"
@@ -188,7 +188,7 @@ push $N59afc400
   xpos -1027
   ypos 59
  }
-push $N59afc400
+push $N2d52d800
  DeepExpression {
   temp_name0 pnx
   temp_expr0 "( deepPosition.red - \[value parent.n_translate.x] ) * ( 1 / ( \[value parent.n_uniform_scale] * \[value parent.n_scale.x] ) )"
@@ -279,8 +279,8 @@ add_layer {deepRawColor deepRawColor.red deepRawColor.green deepRawColor.blue de
   xpos -750
   ypos 809
  }
-set N59b52800 [stack 0]
-push $N59afc400
+set N2e587c00 [stack 0]
+push $N2d52d800
  Dot {
   name Dot3
   xpos -215
@@ -298,7 +298,7 @@ push $N59afc400
   tile_color 0x3d99ff
   label "<font color=cyan>Image Output</font>"
   xpos -249
-  ypos 886
+  ypos 888
   addUserKnob {20 t_VERSION l Version}
   addUserKnob {26 l_VERSION l <b>Version</b> T n/a}
   addUserKnob {26 l_DATE l "<b>Date Modified</b>" T 2019-05-23}
@@ -316,8 +316,8 @@ push $N59afc400
    xpos 542
    ypos 31
   }
+set N2e586c00 [stack 0]
   DeepExpression {
-   inputs 0
    chans1 none
    rgba.red deepPosition.red
    rgba.green deepPosition.green
@@ -332,8 +332,8 @@ push $N59afc400
    xpos 656
    ypos 185
   }
+push $N2e586c00
   DeepToImage {
-   inputs 0
    name DeepToImage1
    xpos 508
    ypos 80
@@ -362,7 +362,6 @@ push $N59afc400
   receive_shadow false
   P_channel deepPosition
   detail 0.1
-  pointSize 1
   name deepPositionToPoints
   xpos -249
   ypos 984
@@ -375,7 +374,7 @@ push $N59afc400
   xpos -1492
   ypos 91
  }
-push $N59b52800
+push $N2e587c00
  Output {
   name Output1
   xpos -784

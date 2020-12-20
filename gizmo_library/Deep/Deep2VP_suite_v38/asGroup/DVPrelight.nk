@@ -1,0 +1,1602 @@
+Group {
+ name DVPrelight
+ tile_color 0x7f65ff
+ label "\[value light_type]\n<font color=cyan>Deep Output</font>"
+ addUserKnob {20 tab_general l General}
+ addUserKnob {41 light_type l "light type" T menu01.light_type}
+ addUserKnob {41 color T menu02.color}
+ addUserKnob {7 intensity R 0 50}
+ intensity 1
+ addUserKnob {4 world_unit l "world unit" +HIDDEN M {"millimeter (mm)" "centimeter (cm)" "decimeter (dm)" "meter (m)" "kilometer (km)" ""}}
+ world_unit "centimeter (cm)"
+ addUserKnob {7 cone_angle l "cone angle" +HIDDEN R 0 180}
+ cone_angle 40
+ addUserKnob {7 cone_penumbra_angle l "cone penumbra angle" +HIDDEN R -60 60}
+ addUserKnob {7 cone_falloff l "cone falloff" +INVISIBLE R 0 1000}
+ addUserKnob {7 exp_in l "falloff in" +HIDDEN R 0.01 10}
+ exp_in 1
+ addUserKnob {7 exp_out l out -STARTLINE +HIDDEN R 0.01 10}
+ exp_out 1
+ addUserKnob {26 ""}
+ addUserKnob {4 display_light l display M {off "show light control" "" ""}}
+ display_light "show light control"
+ addUserKnob {4 display_spot l display +HIDDEN M {off "cone angle" "cone penumbra angle" "cone angle + cone penumbra angle"}}
+ display_spot "cone angle + cone penumbra angle"
+ addUserKnob {41 file_menu l @FolderIcon T LGT.file_menu}
+ addUserKnob {41 snap_menu l @AxisIcon -STARTLINE T LGT.snap_menu}
+ addUserKnob {41 transform T showupTG.transform}
+ addUserKnob {41 xform_order l "transform order" T LGT.xform_order}
+ addUserKnob {41 rot_order l "rotation order" T LGT.rot_order}
+ addUserKnob {41 translate T LGT.translate}
+ addUserKnob {41 rotate T LGT.rotate}
+ addUserKnob {7 uniform_scale l "uniform scale" R 0.01 10}
+ uniform_scale 1
+ addUserKnob {26 ""}
+ addUserKnob {20 grp_3dpreview l "Pointcloud preview" n 1}
+ grp_3dpreview 0
+ addUserKnob {4 display_ptc_type l "display type" M {"no pointcloud preview" "raw pointcloud" "with light applied (slow)" "" "" "" ""}}
+ display_ptc_type "raw pointcloud"
+ addUserKnob {41 detail l "point detail" T deepPositionToPoints.detail}
+ addUserKnob {41 pointSize l "point size" T deepPositionToPoints.pointSize}
+ addUserKnob {20 endGroup_1_1 l endGroup n -1}
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 3.8}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-12-17}
+ addUserKnob {22 btn_CHANGELOG l <b>Changlelog</b> T "log = \"3.8<br>Deep2VPosition<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;for&nbsp;DVPmatte's&nbsp;multi&nbsp;matte&nbsp;color&nbsp;fix.<br><br>DVPmatte<br>-&nbsp;removed&nbsp;2&nbsp;impractical&nbsp;operations<br>-&nbsp;removed&nbsp;falloff&nbsp;type&nbsp;selection,&nbsp;use&nbsp;exponential&nbsp;setting&nbsp;instead<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;to&nbsp;fix&nbsp;multi&nbsp;mattes&nbsp;process<br><br>DVProjection<br>-&nbsp;link&nbsp;camera&nbsp;to&nbsp;use&nbsp;world&nbsp;matrix&nbsp;instead&nbsp;of&nbsp;transformation&nbsp;knobs<br>-&nbsp;removed&nbsp;scale&nbsp;and&nbsp;skew<br>-&nbsp;supported&nbsp;output&nbsp;deepNormal&nbsp;channel&nbsp;correctly&nbsp;(can&nbsp;be&nbsp;find&nbsp;on&nbsp;Misc&nbsp;tab)<br><br>DVPsetLight<br>-&nbsp;fixed&nbsp;the&nbsp;conflict&nbsp;if&nbsp;deep&nbsp;normal&nbsp;pass&nbsp;under&nbsp;deepNormal&nbsp;channel&nbsp;from&nbsp;input<br>-&nbsp;fixed&nbsp;'generated&nbsp;normal'&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;added&nbsp;input&nbsp;2D&nbsp;normal&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;input&nbsp;deep&nbsp;normal&nbsp;channel&nbsp;default&nbsp;changed&nbsp;to&nbsp;'deepNormal'&nbsp;<br><br>DVPrelight<br>-&nbsp;remove&nbsp;unnecessary&nbsp;knobs&nbsp;under&nbsp;different&nbsp;types&nbsp;of&nbsp;light,&nbsp;make&nbsp;interface&nbsp;clear<br>-&nbsp;point&nbsp;light&nbsp;update&nbsp;more&nbsp;accurate&nbsp;algorithm<br>-&nbsp;simplify&nbsp;falloff&nbsp;option&nbsp;on&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light<br>-&nbsp;pointcloud&nbsp;preview&nbsp;update,&nbsp;show&nbsp;the&nbsp;input&nbsp;color<br>-&nbsp;added&nbsp;world&nbsp;scale&nbsp;unit&nbsp;under&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light,&nbsp;this&nbsp;related&nbsp;to&nbsp;light&nbsp;intensity<br>-&nbsp;optimize&nbsp;the&nbsp;setup&nbsp;of&nbsp;point&nbsp;light.&nbsp;The&nbsp;node&nbsp;much&nbsp;lighter<br><br>DVPfresnel<br>-&nbsp;fixed&nbsp;fresnel&nbsp;output&nbsp;in&nbsp;screen&nbsp;space<br>-&nbsp;added&nbsp;unpremult&nbsp;before&nbsp;process<br>-&nbsp;replace&nbsp;gamma&nbsp;to&nbsp;exponential<br><br>DVPscene<br>-&nbsp;'mix'&nbsp;knob&nbsp;name&nbsp;changed&nbsp;to&nbsp;'light_shading'<br><br>DVPToImage<br>-&nbsp;due&nbsp;to&nbsp;DVPsetLight&nbsp;update,&nbsp;it&nbsp;output&nbsp;deepNormal&nbsp;correctly.<br>-&nbsp;added&nbsp;remove&nbsp;the&nbsp;metadata&nbsp;created&nbsp;from&nbsp;Deep2VPosition\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x7f7f7fff
+  label bin
+  note_font_size 42
+  xpos -4490
+  ypos -624
+  bdwidth 3569
+  bdheight 1663
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0x191919ff
+  label "dont touch"
+  note_font_size 42
+  xpos -4494
+  ypos -864
+  bdwidth 2912
+  bdheight 192
+ }
+ Input {
+  inputs 0
+  name deep
+  xpos -86
+  ypos -878
+ }
+ Dot {
+  name Dot11
+  xpos -52
+  ypos -750
+ }
+set Nfe2b6800 [stack 0]
+ Dot {
+  name Dot6
+  xpos 392
+  ypos -750
+ }
+set Nfe2b6400 [stack 0]
+ Dot {
+  name Dot3
+  xpos 793
+  ypos -750
+ }
+set Nfe2b6000 [stack 0]
+add_layer {deepNormal deepNormal.red deepNormal.green deepNormal.blue deepNormal.alpha}
+ DeepExpression {
+  temp_name0 circle
+  temp_expr0 "sqrt( pow2( \[value globalTCL.lgtPX] ) + pow2( \[value globalTCL.lgtPY] ) ) * 2"
+  temp_name1 ocone
+  temp_expr1 "1 / ( tan( radians( \[value oradius] ) ) * abs( \[value globalTCL.lgtPZ] ) * 2 * smoothstep( 0, 1, ( 1 / ( \[value parent.cone_falloff] * 0.004 + 1 ) ) ) )"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "clamp( ( \[value globalTCL.lgtPZ] <= 0 ? 1 - circle * ocone : 0 ) * \[value mult] )"
+  name DeepExpression9
+  label "normal cone"
+  xpos 759
+  ypos -331
+  addUserKnob {20 User}
+  addUserKnob {7 mult}
+  mult {{"max( 1, clamp(parent.cone_angle , 0.1, 180) / abs( parent.cone_penumbra_angle ) )"}}
+  addUserKnob {7 oradius R 0 180}
+  oradius {{"parent.cone_penumbra_angle <= 0 ? parent.cone_angle / 2 : clamp( ( parent.cone_angle + parent.cone_penumbra_angle ) / 2, 0 ,90 )"}}
+ }
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "clamp( deepNormal.alpha * (1 / abs( \[value globalTCL.lgtPZ]) * \[value parent.intensity] * \[value globalTCL.unit] ) )"
+  name DeepExpression5
+  label linear
+  xpos 759
+  ypos -206
+ }
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "1- pow( 1-pow( deepNormal.alpha , \[value expO] ) , \[value expI] )"
+  name DeepExpression12
+  label exponential
+  xpos 759
+  ypos -114
+  addUserKnob {20 User}
+  addUserKnob {7 expI}
+  expI {{"parent.exp_in < 0.01 ? 0.01 : parent.exp_in"}}
+  addUserKnob {7 expO}
+  expO {{"parent.exp_out < 0.01 ? 0.01 : parent.exp_out"}}
+ }
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "deepNormal.alpha * clamp( deepNormal.red * \[value inverseMatrixLGT.invMatrix.6] + deepNormal.green * \[value inverseMatrixLGT.invMatrix.7] + deepNormal.blue * \[value inverseMatrixLGT.invMatrix.8] )"
+  name DeepExpression10
+  label "remove backface"
+  xpos 759
+  ypos 5
+ }
+ DeepExpression {
+  temp_name0 pivot
+  temp_expr0 0.5
+  temp_name1 lift
+  temp_expr1 "(1/\[value globalTCL.unit])"
+  temp_name2 soft
+  temp_expr2 1
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "( ( deepNormal.alpha < pivot ? deepNormal.alpha + ( lift * ( pow( ( 1 - ( deepNormal.alpha / pivot ) ) , ( ( ( ( pivot / lift ) - 1 ) * soft ) + 1 ) ) ) ) : deepNormal.alpha ) - lift ) * 1 / ( 1 - lift )"
+  name DeepExpression11
+  label "ease out"
+  xpos 759
+  ypos 113
+ }
+ Dot {
+  name Dot5
+  xpos 793
+  ypos 3979
+ }
+push $Nfe2b6400
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "deepNormal.red * \[value inverseMatrixLGT.invMatrix.6] + deepNormal.green * \[value inverseMatrixLGT.invMatrix.7] + deepNormal.blue * \[value inverseMatrixLGT.invMatrix.8]"
+  name DeepExpression3
+  label "directional light"
+  xpos 358
+  ypos -337
+ }
+ Dot {
+  name Dot7
+  xpos 392
+  ypos 3987
+ }
+push $Nfe2b6800
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "\[value globalTCL.pt_nstack]"
+  name DeepExpression2
+  xpos -86
+  ypos -415
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_n
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression6
+  xpos -86
+  ypos -302
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_nw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression7
+  xpos -86
+  ypos -188
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_w
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression17
+  xpos -86
+  ypos -74
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_sw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression8
+  xpos -86
+  ypos 40
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_s
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression13
+  xpos -86
+  ypos 154
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_se
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression14
+  xpos -86
+  ypos 268
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_e
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression15
+  xpos -86
+  ypos 382
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_ne
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression16
+  xpos -86
+  ypos 575
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_n
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression18
+  xpos -86
+  ypos 689
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_nw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression43
+  xpos -86
+  ypos 803
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_w
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression44
+  xpos -86
+  ypos 917
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_sw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression45
+  xpos -86
+  ypos 1031
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_s
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression46
+  xpos -86
+  ypos 1145
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_se
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression47
+  xpos -86
+  ypos 1259
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_e
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression48
+  xpos -86
+  ypos 1373
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t_ne
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression19
+  xpos -86
+  ypos 1617
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_n
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression20
+  xpos -86
+  ypos 1731
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_nw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression21
+  xpos -86
+  ypos 1845
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_w
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression22
+  xpos -86
+  ypos 1959
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_sw
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression24
+  xpos -86
+  ypos 2073
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_s
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression25
+  xpos -86
+  ypos 2187
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_se
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression26
+  xpos -86
+  ypos 2301
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_e
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression27
+  xpos -86
+  ypos 2415
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d_ne
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression4
+  xpos -86
+  ypos 2672
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_d
+ }
+ DeepExpression {
+  temp_name0 zpos
+  temp_expr0 "( deepPosition.red - \[value \[value nname].world_matrix.3] ) * \[value \[value nname]_inv.world_matrix.8] + ( deepPosition.green - \[value \[value nname].world_matrix.7] ) * \[value \[value nname]_inv.world_matrix.9] + ( deepPosition.blue - \[value \[value nname].world_matrix.11] ) * \[value \[value nname]_inv.world_matrix.10]"
+  temp_name1 znor
+  temp_expr1 "deepNormal.red * \[value \[value nname]_inv.world_matrix.8] + deepNormal.green * \[value \[value nname]_inv.world_matrix.9] + deepNormal.blue * \[value \[value nname]_inv.world_matrix.10]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "max( deepNormal.alpha, \[value globalTCL.pt_nstack] )"
+  name DeepExpression23
+  xpos -86
+  ypos 2796
+  addUserKnob {20 User}
+  addUserKnob {1 nname}
+  nname pt_t
+ }
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "clamp( (1-deepNormal.alpha) * \[value globalTCL.sphereLinear] )"
+  name DeepExpression30
+  xpos -86
+  ypos 3250
+ }
+ DeepExpression {
+  temp_name0 lgtR
+  temp_expr0 "( deepPosition.red - \[value LGT.world_matrix.3] ) * \[value inverseMatrixLGT.invMatrix.0] + ( deepPosition.green - \[value LGT.world_matrix.7] ) * \[value inverseMatrixLGT.invMatrix.1] + ( deepPosition.blue - \[value LGT.world_matrix.11] ) * \[value inverseMatrixLGT.invMatrix.2]"
+  temp_name1 lgtG
+  temp_expr1 "( deepPosition.red - \[value LGT.world_matrix.3] ) * \[value inverseMatrixLGT.invMatrix.3] + ( deepPosition.green - \[value LGT.world_matrix.7] ) * \[value inverseMatrixLGT.invMatrix.4] + ( deepPosition.blue - \[value LGT.world_matrix.11] ) * \[value inverseMatrixLGT.invMatrix.5]"
+  temp_name2 lgtB
+  temp_expr2 "( deepPosition.red - \[value LGT.world_matrix.3] ) * \[value inverseMatrixLGT.invMatrix.6] + ( deepPosition.green - \[value LGT.world_matrix.7] ) * \[value inverseMatrixLGT.invMatrix.7] + ( deepPosition.blue - \[value LGT.world_matrix.11] ) * \[value inverseMatrixLGT.invMatrix.8]"
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "deepNormal.alpha * ( 1 - clamp( sqrt( pow2( lgtR * \[value globalTCL.ptSize] ) + pow2( lgtG * \[value globalTCL.ptSize] ) + pow2( lgtB * \[value globalTCL.ptSize] ) ) ) )"
+  name DeepExpression31
+  label linear
+  xpos -86
+  ypos 3378
+ }
+ DeepExpression {
+  chans0 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  chans1 none
+  deepNormal.alpha "1- pow( 1-pow( deepNormal.alpha , \[value expO] ) , \[value expI] )"
+  name DeepExpression35
+  label exponential
+  xpos -86
+  ypos 3596
+  addUserKnob {20 User}
+  addUserKnob {7 expI}
+  expI {{"parent.exp_in < 0.01 ? 0.01 : parent.exp_in"}}
+  addUserKnob {7 expO}
+  expO {{"parent.exp_out < 0.01 ? 0.01 : parent.exp_out"}}
+ }
+ Switch {
+  inputs 3
+  which {{parent.light_type}}
+  name Switch1
+  xpos -86
+  ypos 4132
+ }
+ DeepExpression {
+  chans0 {rgba.red rgba.green rgba.blue none}
+  chans1 {-deepNormal.red -deepNormal.green -deepNormal.blue deepNormal.alpha}
+  rgba.red "red + clamp( deepNormal.alpha ) * ( \[value parent.intensity] * \[value intensity_bias] ) * \[value parent.color.r] )"
+  rgba.green "green + clamp( deepNormal.alpha ) * ( \[value parent.intensity] * \[value intensity_bias] ) * \[value parent.color.g] )"
+  rgba.blue "blue + clamp( deepNormal.alpha ) * ( \[value parent.intensity] * \[value intensity_bias] ) * \[value parent.color.b] )"
+  deepNormal.alpha 0
+  name DeepExpression42
+  xpos -86
+  ypos 4328
+  addUserKnob {20 User}
+  addUserKnob {7 intensity_bias}
+  intensity_bias 5
+ }
+ Dot {
+  name Dot13
+  xpos -52
+  ypos 4814
+ }
+set Nfe0ee000 [stack 0]
+ Output {
+  name Output1
+  xpos -86
+  ypos 5117
+ }
+push $Nfe0ee000
+ DeepExpression {
+  chans1 none
+  rgba.red "deepRawColor.red * red + deepRawColor.red"
+  rgba.green "deepRawColor.green * green + deepRawColor.green"
+  rgba.blue "deepRawColor.blue * blue + deepRawColor.blue"
+  name DeepExpression32
+  xpos 1223
+  ypos 4811
+ }
+push $Nfe2b6000
+ Dot {
+  name Dot1
+  xpos 1532
+  ypos -750
+ }
+ DeepExpression {
+  chans1 none
+  rgba.red deepRawColor.red
+  rgba.green deepRawColor.green
+  rgba.blue deepRawColor.blue
+  name DeepExpression1
+  xpos 1498
+  ypos 4592
+ }
+ Switch {
+  inputs 2
+  which {{"parent.display_ptc_type == 1 ? 0 : parent.display_ptc_type == 2 ? 1 : 0"}}
+  name Switch3
+  xpos 1498
+  ypos 4811
+ }
+ Group {
+  name DeepPositionToImage3
+  tile_color 0x3d99ff
+  label "<font color=cyan>Image Output</font>"
+  xpos 1498
+  ypos 4891
+  addUserKnob {20 t_VERSION l Version}
+  addUserKnob {26 l_VERSION l <b>Version</b> T n/a}
+  addUserKnob {26 l_DATE l "<b>Date Modified</b>" T 2019-05-23}
+  addUserKnob {26 l_CHANGELOG l <b>Changelog</b> T "for internal use"}
+  addUserKnob {26 l_DEV l "<b>Developed by</b>" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+ }
+  Input {
+   inputs 0
+   name deep
+   xpos 508
+   ypos -26
+  }
+  Dot {
+   name Dot5
+   xpos 542
+   ypos 31
+  }
+set Nfe118400 [stack 0]
+  DeepExpression {
+   chans1 none
+   rgba.red deepPosition.red
+   rgba.green deepPosition.green
+   rgba.blue deepPosition.blue
+   rgba.alpha "alpha == 0 ? 0 : 1"
+   name DeepExpression15
+   xpos 656
+   ypos 28
+  }
+  DeepToImage {
+   name DeepToImage2
+   xpos 656
+   ypos 185
+  }
+push $Nfe118400
+  DeepToImage {
+   name DeepToImage1
+   xpos 508
+   ypos 80
+  }
+add_layer {deepPosition deepPosition.red deepPosition.green deepPosition.blue deepPosition.alpha}
+  ShuffleCopy {
+   inputs 2
+   red red
+   green green
+   blue blue
+   alpha black
+   out deepPosition
+   name ShuffleCopy1
+   xpos 508
+   ypos 185
+  }
+  Output {
+   name Output1
+   xpos 508
+   ypos 265
+  }
+ end_group
+ PositionToPoints2 {
+  display textured
+  selectable false
+  render_mode textured
+  cast_shadow false
+  receive_shadow false
+  P_channel deepPosition
+  detail 0.1
+  name deepPositionToPoints
+  xpos 1498
+  ypos 4997
+  disable {{"parent.display_ptc_type == 0 ? 1 : 0"}}
+ }
+ NoOp {
+  inputs 0
+  name menu01
+  knobChanged "\nthisGRP = nuke.thisGroup()\nshareKnobs = \['exp_in','exp_out','world_unit']\nspKnobs = \['cone_angle','cone_penumbra_angle']\n\nif thisGRP\['light_type'].value() == 'point' :\n    for knob in shareKnobs :\n        thisGRP\[knob].setVisible(True)\n    for knob in spKnobs :\n        thisGRP\[knob].setVisible(False)\n    thisGRP\['display_spot'].setVisible(False)\n    thisGRP\['display_light'].setVisible(True)\n\nelif thisGRP\['light_type'].value() == 'directional' :\n    for knob in shareKnobs :\n        thisGRP\[knob].setVisible(False)\n    for knob in spKnobs :\n        thisGRP\[knob].setVisible(False)\n    thisGRP\['display_spot'].setVisible(False)\n    thisGRP\['display_light'].setVisible(True)\n\nelif thisGRP\['light_type'].value() == 'spot' :\n    for knob in shareKnobs :\n        thisGRP\[knob].setVisible(True)\n    for knob in spKnobs :\n        thisGRP\[knob].setVisible(True)\n    thisGRP\['display_spot'].setVisible(True)\n    thisGRP\['display_light'].setVisible(False)\n"
+  xpos -4400
+  ypos -757
+  addUserKnob {20 User}
+  addUserKnob {4 light_type l "light type" M {point directional spot ""}}
+  light_type directional
+ }
+ NoOp {
+  inputs 0
+  name menu02
+  knobChanged "\nthisN = nuke.thisNode()\nfor knob in thisN.knobs() :\n    try :\n        if knob.split('_')\[1] == 'panelDropped' :\n            thisN.removeKnob( thisN\[knob] )\n    except :\n        pass\n"
+  xpos -4277
+  ypos -756
+  addUserKnob {20 User}
+  addUserKnob {18 color}
+  color {1 1 1}
+  addUserKnob {6 color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ }
+ Axis {
+  inputs 0
+  display off
+  selectable false
+  translate {{parent.translate} {parent.translate} {parent.translate}}
+  name translateOnly
+  xpos -4408
+  ypos 27
+ }
+ Dot {
+  name Dot2
+  xpos -4384
+  ypos 173
+ }
+set Nfe165c00 [stack 0]
+ Axis {
+  display off
+  selectable false
+  rotate {0 180 0}
+  name pt_s
+  xpos -3899
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 135 0}
+  name pt_sw
+  xpos -4026
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 -45 0}
+  name pt_ne
+  xpos -3511
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 90 0}
+  name pt_t_w
+  xpos -3087
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 135 0}
+  name pt_t_sw
+  xpos -2972
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 180 0}
+  name pt_t_s
+  xpos -2845
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 -135 0}
+  name pt_t_se
+  xpos -2718
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 -90 0}
+  name pt_t_e
+  xpos -2591
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 -45 0}
+  name pt_t_ne
+  xpos -2457
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 0 0}
+  name pt_d_n
+  xpos -2298
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 45 0}
+  name pt_d_nw
+  xpos -2171
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 90 0}
+  name pt_d_w
+  xpos -2030
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 135 0}
+  name pt_d_sw
+  xpos -1915
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 -135 0}
+  name pt_d_se
+  xpos -1662
+  ypos 749
+ }
+ Axis {
+  inputs 0
+  name LGT
+  xpos -4406
+  ypos -256
+ }
+ Group {
+  inputs 0
+  name spot
+  xpos -4156
+  ypos -475
+ }
+  Cylinder {
+   inputs 0
+   display wireframe
+   selectable false
+   render_mode off
+   cast_shadow false
+   receive_shadow false
+   rows 1
+   columns 8
+   close_bottom true
+   translate {0 1 0}
+   rotate {-90 0 0}
+   pivot {0 -1 0}
+   name Cylinder1
+   xpos 215
+   ypos 295
+  }
+  EditGeo {
+   selectable false
+   render_mode off
+   keys {{0 1 2 3 4 5 6 7 8}
+     }
+   values {{0.001 0.001 -0.001 0.001 -0.9988563061 0.001 -0.7062979937 -0.7062979937 0.001 -0.9988563657 8.035581089e-08 -0.001 -0.7062979937 0.7062980533 -0.001 0.001 0.9988564253 -0.001 0.7062981725 0.7062979341 -0.001 0.9988564253 0.001 -0.001 0.7062978148 -0.7062982321 0.001}
+     }
+   scaling {0 0 0}
+   name EditGeo2
+   xpos 215
+   ypos 375
+  }
+  Dot {
+   name Dot1
+   xpos 249
+   ypos 430
+  }
+set Nfe1dd400 [stack 0]
+  TransformGeo {
+   display wireframe
+   selectable false
+   render_mode off
+   scaling {{"radians( parent.parent.cone_angle + parent.parent.cone_penumbra_angle )"} {scaling.x} 1}
+   name TransformGeo1
+   xpos 332
+   ypos 491
+  }
+set Nfe1dd000 [stack 0]
+push $Nfe1dd400
+  TransformGeo {
+   display wireframe
+   selectable false
+   render_mode off
+   scaling {{"radians( parent.parent.cone_angle )"} {scaling.x} 1}
+   name TransformGeo2
+   xpos 215
+   ypos 489
+  }
+set Nfe1dcc00 [stack 0]
+  MergeGeo {
+   inputs 2
+   name MergeGeo1
+   xpos 332
+   ypos 571
+  }
+push $Nfe1dd000
+push $Nfe1dcc00
+  Dot {
+   inputs 0
+   name Dot2
+   xpos 172
+   ypos 570
+  }
+  Switch {
+   inputs 4
+   which {{"parent.parent.display_spot == 0 ? 0 : parent.parent.display_spot == 1 ? 1 : parent.parent.display_spot == 2 ? 2 : 3"}}
+   name Switch1
+   xpos 215
+   ypos 642
+  }
+  Output {
+   name Output1
+   xpos 215
+   ypos 722
+  }
+ end_group
+ Group {
+  inputs 0
+  name directional
+  xpos -4260
+  ypos -474
+ }
+  Cylinder {
+   inputs 0
+   selectable false
+   rows 1
+   columns 4
+   translate {0 1 0}
+   rotate {-90 0 0}
+   scaling {0.03 1 0.03}
+   uniform_scale 0.5
+   pivot {0 -1 0}
+   name Cylinder2
+   xpos 215
+   ypos 418
+  }
+set Nfdf1f800 [stack 0]
+  TransformGeo {
+   selectable false
+   translate {0.05 0.05 0}
+   name TransformGeo4
+   xpos 537
+   ypos 534
+  }
+push $Nfdf1f800
+  TransformGeo {
+   selectable false
+   translate {-0.05 0.05 0}
+   name TransformGeo3
+   xpos 430
+   ypos 535
+  }
+push $Nfdf1f800
+  TransformGeo {
+   selectable false
+   translate {-0.05 -0.05 0}
+   name TransformGeo2
+   xpos 325
+   ypos 536
+  }
+push $Nfdf1f800
+  TransformGeo {
+   selectable false
+   translate {0.05 -0.05 0}
+   name TransformGeo1
+   xpos 215
+   ypos 538
+  }
+  MergeGeo {
+   inputs 4
+   display wireframe
+   selectable false
+   name MergeGeo1
+   xpos 215
+   ypos 618
+  }
+  Dot {
+   inputs 0
+   name Dot1
+   xpos 166
+   ypos 647
+  }
+  Switch {
+   inputs 2
+   which {{"parent.parent.display_light == 0 ? 0 : 1"}}
+   name Switch1
+   xpos 215
+   ypos 698
+  }
+  Output {
+   name Output1
+   xpos 215
+   ypos 806
+  }
+ end_group
+ Group {
+  inputs 0
+  name point
+  xpos -4361
+  ypos -475
+ }
+  Sphere {
+   inputs 0
+   display wireframe
+   render_mode off
+   cast_shadow false
+   receive_shadow false
+   rows 10
+   columns 10
+   uniform_scale 0.1
+   name Sphere24
+   xpos -497
+   ypos -420
+  }
+  Output {
+   name Output1
+   xpos -497
+   ypos -320
+  }
+ end_group
+ Switch {
+  inputs 3
+  which {{parent.light_type}}
+  name Switch2
+  xpos -4260
+  ypos -398
+ }
+ TransformGeo {
+  inputs 2
+  selectable false
+  uniform_scale {{parent.uniform_scale}}
+  name showupTG
+  gl_color 0x7f7f7fff
+  xpos -4260
+  ypos -235
+ }
+ Group {
+  inputs 0
+  name inverseMatrixLGT
+  tile_color 0x337f4cff
+  xpos -4070
+  ypos -236
+  addUserKnob {20 tab_general l General}
+  addUserKnob {1 knob_path}
+  knob_path LGT.world_matrix
+  addUserKnob {26 ""}
+  addUserKnob {41 id T id_assign.matrix}
+  addUserKnob {26 ""}
+  addUserKnob {7 determinant}
+  determinant {{"\[value \[value knob_path].\[value id.0]] * ((\[value \[value knob_path].\[value id.4]]*\[value \[value knob_path].\[value id.8]]) - (\[value \[value knob_path].\[value id.5]]*\[value \[value knob_path].\[value id.7]])) - \[value \[value knob_path].\[value id.1]] * ((\[value \[value knob_path].\[value id.3]]*\[value \[value knob_path].\[value id.8]]) - (\[value \[value knob_path].\[value id.5]]*\[value \[value knob_path].\[value id.6]])) + \[value \[value knob_path].\[value id.2]] * ((\[value \[value knob_path].\[value id.3]]*\[value \[value knob_path].\[value id.7]])-(\[value \[value knob_path].\[value id.4]]*\[value \[value knob_path].\[value id.6]]))"}}
+  addUserKnob {26 ""}
+  addUserKnob {41 cofactor T mtx_cofactor.matrix}
+  addUserKnob {26 ""}
+  addUserKnob {41 invMatrix T matrix_output.matrix}
+  addUserKnob {20 t_VERSION l Version}
+  addUserKnob {26 l_VERSION l Version T 1.0}
+  addUserKnob {26 l_DATE l "Date Modified" T 2011-11-28}
+  addUserKnob {26 l_CHANGELOG l Changelog T "v1.0\n- reveal the calculate output of \n  inverse matrix which is c44matrix\n  and colormatrix doesn't show\n  "}
+  addUserKnob {26 l_DEV l "Developed by" T "Mark Joey Tang"}
+ }
+  Matrix {
+   inputs 0
+   matrix {
+       {0 1 2}
+       {4 5 6}
+       {8 9 10}
+     }
+   name id_assign
+   xpos -12
+   ypos 33
+  }
+  Matrix {
+   inputs 0
+   matrix {
+       {{"(\[value \[value knob_path].\[value id.4]]*\[value \[value knob_path].\[value id.8]]) - (\[value \[value knob_path].\[value id.5]]*\[value \[value knob_path].\[value id.7]])"} {"(\[value \[value knob_path].\[value id.7]]*\[value \[value knob_path].\[value id.2]]) - (\[value \[value knob_path].\[value id.8]]*\[value \[value knob_path].\[value id.1]])"} {"(\[value \[value knob_path].\[value id.1]]*\[value \[value knob_path].\[value id.5]]) - (\[value \[value knob_path].\[value id.2]]*\[value \[value knob_path].\[value id.4]])"}}
+       {{"(\[value \[value knob_path].\[value id.5]]*\[value \[value knob_path].\[value id.6]]) - (\[value \[value knob_path].\[value id.3]]*\[value \[value knob_path].\[value id.8]])"} {"(\[value \[value knob_path].\[value id.8]]*\[value \[value knob_path].\[value id.0]]) - (\[value \[value knob_path].\[value id.6]]*\[value \[value knob_path].\[value id.2]])"} {"(\[value \[value knob_path].\[value id.2]]*\[value \[value knob_path].\[value id.3]]) - (\[value \[value knob_path].\[value id.0]]*\[value \[value knob_path].\[value id.5]])"}}
+       {{"(\[value \[value knob_path].\[value id.3]]*\[value \[value knob_path].\[value id.7]]) - (\[value \[value knob_path].\[value id.4]]*\[value \[value knob_path].\[value id.6]])"} {"(\[value \[value knob_path].\[value id.6]]*\[value \[value knob_path].\[value id.1]]) - (\[value \[value knob_path].\[value id.7]]*\[value \[value knob_path].\[value id.0]])"} {"(\[value \[value knob_path].\[value id.0]]*\[value \[value knob_path].\[value id.4]]) - (\[value \[value knob_path].\[value id.1]]*\[value \[value knob_path].\[value id.3]])"}}
+     }
+   name mtx_cofactor
+   xpos 86
+   ypos 32
+  }
+  Matrix {
+   inputs 0
+   matrix {
+       {{"cofactor.0 == 0 || determinant == 0 ? 0 : cofactor.0/determinant"} {"cofactor.1 == 0 || determinant == 0 ? 0 : cofactor.1/determinant"} {"cofactor.2 == 0 || determinant == 0 ? 0 : cofactor.2/determinant"}}
+       {{"cofactor.3 == 0 || determinant == 0 ? 0 : cofactor.3/determinant"} {"cofactor.4 == 0 || determinant == 0 ? 0 : cofactor.4/determinant"} {"cofactor.5 == 0 || determinant == 0 ? 0 : cofactor.5/determinant"}}
+       {{"cofactor.6 == 0 || determinant == 0 ? 0 : cofactor.6/determinant"} {"cofactor.7 == 0 || determinant == 0 ? 0 : cofactor.7/determinant"} {"cofactor.8 == 0 || determinant == 0 ? 0 : cofactor.8/determinant"}}
+     }
+   name matrix_output
+   xpos 186
+   ypos 33
+  }
+ end_group
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 -90 0}
+  name pt_d_e
+  xpos -1535
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {90 0 0}
+  name pt_t
+  xpos -1064
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 0 0}
+  name pt_t_n
+  xpos -3354
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {45 45 0}
+  name pt_t_nw
+  xpos -3225
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 180 0}
+  name pt_d_s
+  xpos -1789
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  name pt_n
+  xpos -4408
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 45 0}
+  name pt_nw
+  xpos -4281
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 90 0}
+  name pt_w
+  xpos -4141
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 -135 0}
+  name pt_se
+  xpos -3772
+  ypos 749
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {0 -90 0}
+  name pt_e
+  xpos -3645
+  ypos 749
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_w_inv
+  xpos -4141
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_w
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_nw_inv
+  xpos -4279
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_nw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_n_inv
+  xpos -4409
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_n
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_sw_inv
+  xpos -4022
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_sw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_s_inv
+  xpos -3894
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_s
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_se_inv
+  xpos -3771
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_se
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_e_inv
+  xpos -3645
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_e
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_ne_inv
+  xpos -3510
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_ne
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_n_inv
+  xpos -3361
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_n
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_nw_inv
+  xpos -3225
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_nw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_w_inv
+  xpos -3089
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_w
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_sw_inv
+  xpos -2968
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_sw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_s_inv
+  xpos -2842
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_s
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_se_inv
+  xpos -2718
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_se
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_e_inv
+  xpos -2586
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_e
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_ne_inv
+  xpos -2450
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t_ne
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_n_inv
+  xpos -2298
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_n
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_nw_inv
+  xpos -2165
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_nw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_w_inv
+  xpos -2030
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_w
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_sw_inv
+  xpos -1915
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_sw
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_s_inv
+  xpos -1788
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_s
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_se_inv
+  xpos -1666
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_se
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_e_inv
+  xpos -1537
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_e
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_ne_inv
+  xpos -1401
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d_ne
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_d_inv
+  xpos -1198
+  ypos 889
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_d
+ }
+ NoOp {
+  inputs 0
+  name globalTCL
+  xpos -4156
+  ypos -539
+  addUserKnob {20 User}
+  addUserKnob {1 nodeNameLGT}
+  nodeNameLGT inverseMatrixLGT.invMatrix
+  addUserKnob {1 lgtPX}
+  lgtPX "(deepPosition.red-\[value LGT.world_matrix.3])*\[value nodeNameLGT].0 + (deepPosition.green-\[value LGT.world_matrix.7])*\[value nodeNameLGT].1 + (deepPosition.blue-\[value LGT.world_matrix.11])*\[value nodeNameLGT].2"
+  addUserKnob {1 lgtPY}
+  lgtPY "(deepPosition.red-\[value LGT.world_matrix.3])*\[value nodeNameLGT].3 + (deepPosition.green-\[value LGT.world_matrix.7])*\[value nodeNameLGT].4 + (deepPosition.blue-\[value LGT.world_matrix.11])*\[value nodeNameLGT].5"
+  addUserKnob {1 lgtPZ}
+  lgtPZ "(deepPosition.red-\[value LGT.world_matrix.3])*\[value nodeNameLGT].6 + (deepPosition.green-\[value LGT.world_matrix.7])*\[value nodeNameLGT].7 + (deepPosition.blue-\[value LGT.world_matrix.11])*\[value nodeNameLGT].8"
+  addUserKnob {1 lgtNZ}
+  lgtNZ "deepNormal.red*\[value nodeNameLGT].6 + deepNormal.green*\[value nodeNameLGT].7 + deepNormal.blue*\[value nodeNameLGT].8"
+  addUserKnob {26 ""}
+  addUserKnob {1 sphereLinear}
+  sphereLinear "1-clamp( sqrt( pow2(\[value globalTCL.lgtPX]) + pow2(\[value globalTCL.lgtPY]) + pow2(\[value globalTCL.lgtPZ]) ) * \[value globalTCL.ptSize] )"
+  addUserKnob {26 ""}
+  addUserKnob {7 unit}
+  unit {{"pow( 10 , parent.world_unit )"}}
+  addUserKnob {7 ptSize}
+  ptSize {{1/(parent.intensity*unit)}}
+  addUserKnob {1 pt_nstack}
+  pt_nstack "clamp( (1-znor) * -zpos * \[value globalTCL.ptSize] )"
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-90 0 0}
+  name pt_d
+  xpos -1198
+  ypos 748
+ }
+ Axis {
+  inputs 0
+  rot_order YXZ
+  rotate {{"-\[value mother].rotate.x"} {"-\[value mother].rotate.y"} 0}
+  name pt_t_inv
+  xpos -1062
+  ypos 893
+  addUserKnob {20 User}
+  addUserKnob {1 mother}
+  mother pt_t
+ }
+push $Nfe165c00
+ Axis {
+  display off
+  selectable false
+  rotate {-45 -45 0}
+  name pt_d_ne
+  xpos -1397
+  ypos 758
+ }
+end_group

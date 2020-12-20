@@ -1,0 +1,86 @@
+Group {
+ name DVPort
+ tile_color 0x4d00ccff
+ label "<img src='Camera.png'> info"
+ note_font "MS Shell Dlg 2"
+ addUserKnob {20 tab_general l General}
+ addUserKnob {20 cam_data_grp l "CAMERA DATA" n 1}
+ cam_data_grp 0
+ addUserKnob {4 xform_order l "transform order" +DISABLED M {SRT STR RST RTS TSR TRS}}
+ xform_order {{"\[exists input] ? input.xform_order : 0"}}
+ addUserKnob {4 rot_order l "rotation order" +DISABLED M {XYZ XZY YXZ YZX ZXY ZYX}}
+ rot_order {{"\[exists input] ? input.rot_order : 0"}}
+ addUserKnob {13 translate +DISABLED}
+ translate {{"\[exists input] ? input.translate : 0"} {"\[exists input] ? input.translate : 0"} {"\[exists input] ? input.translate : 0"}}
+ addUserKnob {13 rotate +DISABLED}
+ rotate {{"\[exists input] ? input.rotate : 0"} {"\[exists input] ? input.rotate : 0"} {"\[exists input] ? input.rotate : 0"}}
+ addUserKnob {13 scaling l scale +DISABLED}
+ scaling {{"\[exists input] ? input.scaling : 0"} {"\[exists input] ? input.scaling : 0"} {"\[exists input] ? input.scaling : 0"}}
+ addUserKnob {7 uniform_scale l "uniform scale" +DISABLED R 0.01 10}
+ uniform_scale {{"\[exists input] ? input.uniform_scale : 0"}}
+ addUserKnob {13 skew +DISABLED}
+ skew {{"\[exists input] ? input.skew : 0"} {"\[exists input] ? input.skew : 0"} {"\[exists input] ? input.skew : 0"}}
+ addUserKnob {13 pivot +DISABLED}
+ pivot {{"\[exists input] ? input.pivot : 0"} {"\[exists input] ? input.pivot : 0"} {"\[exists input] ? input.pivot : 0"}}
+ addUserKnob {41 world_matrix l "world matrix" T camhub.world_matrix}
+ addUserKnob {7 focal +DISABLED R 5 100}
+ focal {{"\[exists input] ? input.focal : 0"}}
+ addUserKnob {7 haperture l "horiz aperture" +DISABLED R 0.1 50}
+ haperture {{"\[exists input] ? input.haperture : 0"}}
+ addUserKnob {7 near +DISABLED R 0.1 10}
+ near {{"\[exists input] ? input.near : 0"}}
+ addUserKnob {7 far +DISABLED R 11 10000}
+ far {{"\[exists input] ? input.far : 0"}}
+ addUserKnob {30 win_translate l "window translate" +DISABLED}
+ win_translate {{"\[exists input] ? input.win_translate : 0"} {"\[exists input] ? input.win_translate : 0"}}
+ addUserKnob {30 win_scale l "window scale" +DISABLED}
+ win_scale {{"\[exists input] ? input.win_scale : 0"} {"\[exists input] ? input.win_scale : 0"}}
+ addUserKnob {7 winroll l "window roll" +DISABLED R -45 45}
+ winroll {{"\[exists input] ? input.winroll : 0"}}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {20 t_VERSION l Version}
+ addUserKnob {26 l_VERSION l Version T 3.8}
+ addUserKnob {26 l_DATE l "Date Modified" T 2020-12-17}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"3.8<br>Deep2VPosition<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;for&nbsp;DVPmatte's&nbsp;multi&nbsp;matte&nbsp;color&nbsp;fix.<br><br>DVPmatte<br>-&nbsp;removed&nbsp;2&nbsp;impractical&nbsp;operations<br>-&nbsp;removed&nbsp;falloff&nbsp;type&nbsp;selection,&nbsp;use&nbsp;exponential&nbsp;setting&nbsp;instead<br>-&nbsp;added&nbsp;metadata&nbsp;setup&nbsp;to&nbsp;fix&nbsp;multi&nbsp;mattes&nbsp;process<br><br>DVProjection<br>-&nbsp;link&nbsp;camera&nbsp;to&nbsp;use&nbsp;world&nbsp;matrix&nbsp;instead&nbsp;of&nbsp;transformation&nbsp;knobs<br>-&nbsp;removed&nbsp;scale&nbsp;and&nbsp;skew<br>-&nbsp;supported&nbsp;output&nbsp;deepNormal&nbsp;channel&nbsp;correctly&nbsp;(can&nbsp;be&nbsp;find&nbsp;on&nbsp;Misc&nbsp;tab)<br><br>DVPsetLight<br>-&nbsp;fixed&nbsp;the&nbsp;conflict&nbsp;if&nbsp;deep&nbsp;normal&nbsp;pass&nbsp;under&nbsp;deepNormal&nbsp;channel&nbsp;from&nbsp;input<br>-&nbsp;fixed&nbsp;'generated&nbsp;normal'&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;added&nbsp;input&nbsp;2D&nbsp;normal&nbsp;with&nbsp;unpremult,&nbsp;this&nbsp;will&nbsp;fix&nbsp;the&nbsp;normal&nbsp;output&nbsp;in&nbsp;2D<br>-&nbsp;input&nbsp;deep&nbsp;normal&nbsp;channel&nbsp;default&nbsp;changed&nbsp;to&nbsp;'deepNormal'&nbsp;<br><br>DVPrelight<br>-&nbsp;remove&nbsp;unnecessary&nbsp;knobs&nbsp;under&nbsp;different&nbsp;types&nbsp;of&nbsp;light,&nbsp;make&nbsp;interface&nbsp;clear<br>-&nbsp;point&nbsp;light&nbsp;update&nbsp;more&nbsp;accurate&nbsp;algorithm<br>-&nbsp;simplify&nbsp;falloff&nbsp;option&nbsp;on&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light<br>-&nbsp;pointcloud&nbsp;preview&nbsp;update,&nbsp;show&nbsp;the&nbsp;input&nbsp;color<br>-&nbsp;added&nbsp;world&nbsp;scale&nbsp;unit&nbsp;under&nbsp;point&nbsp;light&nbsp;and&nbsp;spot&nbsp;light,&nbsp;this&nbsp;related&nbsp;to&nbsp;light&nbsp;intensity<br>-&nbsp;optimize&nbsp;the&nbsp;setup&nbsp;of&nbsp;point&nbsp;light.&nbsp;The&nbsp;node&nbsp;much&nbsp;lighter<br><br>DVPfresnel<br>-&nbsp;fixed&nbsp;fresnel&nbsp;output&nbsp;in&nbsp;screen&nbsp;space<br>-&nbsp;added&nbsp;unpremult&nbsp;before&nbsp;process<br>-&nbsp;replace&nbsp;gamma&nbsp;to&nbsp;exponential<br><br>DVPscene<br>-&nbsp;'mix'&nbsp;knob&nbsp;name&nbsp;changed&nbsp;to&nbsp;'light_shading'<br><br>DVPToImage<br>-&nbsp;due&nbsp;to&nbsp;DVPsetLight&nbsp;update,&nbsp;it&nbsp;output&nbsp;deepNormal&nbsp;correctly.<br>-&nbsp;added&nbsp;remove&nbsp;the&nbsp;metadata&nbsp;created&nbsp;from&nbsp;Deep2VPosition\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_DEV l "Developed by" T "<a href='https://facebook.com/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x4c4c4cff
+  label bin
+  note_font_size 42
+  xpos -405
+  ypos -576
+  bdheight 110
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos -197
+  ypos -591
+ }
+ Camera {
+  display off
+  selectable false
+  rot_order XYZ
+  focal {{parent.focal}}
+  haperture {{parent.haperture}}
+  near {{parent.near}}
+  far {{parent.far}}
+  win_translate {{parent.win_translate} {parent.win_translate}}
+  win_scale {{parent.win_scale} {parent.win_scale}}
+  winroll {{parent.winroll}}
+  name camhub
+  xpos -187
+  ypos -538
+ }
+ NoOp {
+  inputs 0
+  name store
+  xpos -395
+  ypos -496
+  addUserKnob {20 User}
+  addUserKnob {22 dev T "thisGRP = nuke.thisGroup()\nallKnobs = \['xform_order','rot_order','translate','rotate','scaling','uniform_scale','skew','pivot','world_matrix','focal','haperture','near','far','win_translate','win_scale','winroll']\nfor knob in thisGRP.knobs() :\n    if knob in allKnobs :\n        thisGRP\[knob].setEnabled( False )" +STARTLINE}
+ }
+end_group
