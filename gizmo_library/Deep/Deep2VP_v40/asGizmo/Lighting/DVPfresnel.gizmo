@@ -46,6 +46,7 @@ Gizmo {
   addUserKnob {20 User}
   addUserKnob {18 multiply t "Constant to multiply result by" R 0 4}
   multiply 1
+  addUserKnob {6 multiply_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
  }
  Group {
   inputs 0
@@ -133,22 +134,7 @@ Gizmo {
   xpos 30
   ypos -75
  }
-set Nc731e400 [stack 0]
- NoOp {
-  name getCam
-  xpos -374
-  ypos -78
-  addUserKnob {20 User}
-  addUserKnob {13 cmr01}
-  cmr01 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 0 0]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 1 1]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 2 2]+0"}}
-  addUserKnob {13 cmr02}
-  cmr02 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 4 4]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 5 5]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 6 6]+0"}}
-  addUserKnob {13 cmr03}
-  cmr03 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 8 8]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 9 9]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 10 10]+0"}}
-  addUserKnob {7 aspect}
-  aspect {{"\[metadata DVPcamAspect]+0"}}
- }
-push $Nc731e400
+set N4e88c00 [stack 0]
 add_layer {deepNormal deepNormal.red deepNormal.green deepNormal.blue deepNormal.alpha}
  DeepExpression {
   temp_name0 uMult
@@ -195,9 +181,9 @@ add_layer {deepNormal deepNormal.red deepNormal.green deepNormal.blue deepNormal
  Dot {
   name Dot1
   xpos 30
-  ypos 239
+  ypos 301
  }
-set Nc731d000 [stack 0]
+set Na337800 [stack 0]
  DeepExpression {
   temp_name0 celShade
   temp_expr0 "clamp(deepNormal.alpha) ** \[value toonRatio] * (\[value toonLayers]+1)"
@@ -207,7 +193,7 @@ set Nc731d000 [stack 0]
   name DeepExpression40
   label "toon shade"
   xpos 128
-  ypos 289
+  ypos 360
   addUserKnob {20 User}
   addUserKnob {3 toonLayers}
   toonLayers {{"\[metadata sLayers]+0 <= 1 ? 1 : \[metadata sLayers]+0"}}
@@ -216,13 +202,13 @@ set Nc731d000 [stack 0]
   addUserKnob {7 toonRatio}
   toonRatio {{"\[metadata sRatio]+0"}}
  }
-push $Nc731d000
+push $Na337800
  Switch {
   inputs 2
   which {{"\[metadata DVPshader]+0==2 ? 1 : 0"}}
   name Switch1
   xpos -4
-  ypos 346
+  ypos 417
  }
  DeepExpression {
   chans0 {rgba.red rgba.green rgba.blue none}
@@ -234,11 +220,26 @@ push $Nc731d000
   name DeepExpression2
   label "apply color"
   xpos -4
-  ypos 426
+  ypos 497
  }
  Output {
   name Output1
   xpos -4
-  ypos 506
+  ypos 577
+ }
+push $N4e88c00
+ NoOp {
+  name getCam
+  xpos -374
+  ypos -78
+  addUserKnob {20 User}
+  addUserKnob {13 cmr01}
+  cmr01 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 0 0]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 1 1]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 2 2]+0"}}
+  addUserKnob {13 cmr02}
+  cmr02 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 4 4]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 5 5]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 6 6]+0"}}
+  addUserKnob {13 cmr03}
+  cmr03 {{"\[lrange \[split \[metadata DVPcamMTX] \" \"] 8 8]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 9 9]+0"} {"\[lrange \[split \[metadata DVPcamMTX] \" \"] 10 10]+0"}}
+  addUserKnob {7 aspect}
+  aspect {{"\[metadata DVPcamAspect]+0"}}
  }
 end_group
