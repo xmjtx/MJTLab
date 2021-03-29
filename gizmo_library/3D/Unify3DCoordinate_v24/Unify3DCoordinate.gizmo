@@ -1,4 +1,4 @@
-Group {
+Gizmo {
  name Unify3DCoordinate
  tile_color 0xffbf00ff
  gl_color 0xffbf00ff
@@ -29,15 +29,15 @@ Group {
  addUserKnob {20 resultTabEnd l "" -STARTLINE n -3}
  addUserKnob {20 tag_nodeClass l "node class data (dev)"}
  addUserKnob {43 filterNonReverse +DISABLED}
- filterNonReverse Camera,Camera2,Light,Light2,DirectLight,Environment,Axis,Axis2,Light3,Axis3
+ filterNonReverse Camera,Camera2,Light,Light2,DirectLight,Environment,Axis,Axis2,Light3,Axis3,Camera3
  addUserKnob {43 filter3DNodes +DISABLED}
- filter3DNodes Axis,Axis2,Card,Card2,Cube,Cylinder,Sphere,ReadGeo,ReadGeo2,Light,Light2,DirectLight,Spotlight,Environment,TransformGeo,EditGeo,Camera,Camera2,Light3,Axis3
+ filter3DNodes Axis,Axis2,Card,Card2,Cube,Cylinder,Sphere,ReadGeo,ReadGeo2,Light,Light2,DirectLight,Spotlight,Environment,TransformGeo,EditGeo,Camera,Camera2,Light3,Axis3,Camera3
  addUserKnob {22 add_class l "add new node class into the list" T "p = nuke.Panel('add new node class into the list :')\np.addBooleanCheckBox('Is it a non-reverse node?', False)\np.addSingleLineInput('Node class :', '')\n\nif p.show() :\n\tnewNR = p.value('Is it a non-reverse node?')\n\tnewItem = p.value('Node class :')\n\n\tif not newItem\[:1].isalpha() :\n\t\tnuke.message('Illegal first letter of new node class.<br><font color=\"orange\">Only accept alphabet on the first letter.</font>')\n\telse :\n\t\tthisGRP = nuke.thisGroup()\n\n\t\tfilterCheck = thisGRP\['filterNonReverse'].getValue().split(',')\n\t\tfilter3DNodes = thisGRP\['filter3DNodes'].getValue().split(',')\n\n\t\tcheckReturn = 0\n\n\t\tif newNR :\n\t\t\tif newItem in filterCheck :\n\t\t\t\tcheckReturn = 1\n\n\t\tif newItem in filter3DNodes :\n\t\t\tcheckReturn = 1\n\n\t\tif checkReturn :\n\t\t\tnuke.message('New node class already existed in the list.<br>If you want to modify it, please remove it first.')\n\t\telse :\n\t\t\tif newNR :\n\t\t\t\tfilterCheck.append( newItem )\n\t\t\t\tthisGRP\['filterNonReverse'].setValue( ','.join(filterCheck) )\n\n\t\t\tfilter3DNodes.append( newItem )\n\t\t\tthisGRP\['filter3DNodes'].setValue( ','.join(filter3DNodes) )" +STARTLINE}
  addUserKnob {22 remove_class l "remove custom class from the list" -STARTLINE T "thisGRP = nuke.thisGroup()\n\nfilterCheck = thisGRP\['filterNonReverse'].getValue().split(',')\nfilter3DNodes = thisGRP\['filter3DNodes'].getValue().split(',')\n\nnoDefault = \['Axis', 'Axis2', 'Card', 'Card2', 'Cube', 'Cylinder', 'Sphere', 'ReadGeo', 'ReadGeo2', 'Light', 'Light2', 'DirectLight', 'Spotlight', 'Environment', 'TransformGeo', 'EditGeo', 'Camera', 'Camera2']\n\ncustomClass = \[]\n\nfor i in filterCheck :\n\tif i not in noDefault :\n\t\tif i not in customClass :\n\t\t\tcustomClass.append( i )\n\nfor i in filter3DNodes :\n\tif i not in noDefault :\n\t\tif i not in customClass :\n\t\t\tcustomClass.append( i )\n\nif customClass :\n\tp = nuke.Panel('select custom class to remove :')\n\tp.addEnumerationPulldown( 'custom class in the list :', ' '.join(customClass) )\n\n\tif p.show() :\n\t\trmItem = p.value( 'custom class in the list :' )\n\n\t\ttry :\n\t\t\tfilterCheck.remove( rmItem )\n\t\t\tthisGRP\['filterNonReverse'].setValue( ','.join(filterCheck) )\n\t\texcept :\n\t\t\tpass\n\n\t\ttry :\n\t\t\tfilter3DNodes.remove( rmItem )\n\t\t\tthisGRP\['filter3DNodes'].setValue( ','.join(filter3DNodes) )\n\t\texcept :\n\t\t\tpass\nelse :\n\tnuke.message('No custom class found in the list.')"}
  addUserKnob {20 t_VERSION l Version}
- addUserKnob {26 l_VERSION l Version T 2.3}
- addUserKnob {26 l_DATE l "Date Modified" T 2021-03-28}
- addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"2.3<br>-&nbsp;compatible&nbsp;with&nbsp;python3<br>-&nbsp;added&nbsp;Light3&nbsp;&&nbsp;Axis3&nbsp;class<br><br>2.2<br>-&nbsp;frame&nbsp;range&nbsp;added&nbsp;'current&nbsp;<br>&nbsp;&nbsp;frame'option.&nbsp;For&nbsp;1&nbsp;frame&nbsp;calculation.<br>-&nbsp;exposed&nbsp;custom&nbsp;node&nbsp;class&nbsp;data.<br>&nbsp;&nbsp;User&nbsp;can&nbsp;add&nbsp;custom&nbsp;node&nbsp;class&nbsp;<br>&nbsp;&nbsp;if&nbsp;there&nbsp;has&nbsp;special&nbsp;3D&nbsp;nodes.<br>&nbsp;&nbsp;*&nbsp;custom&nbsp;node&nbsp;class&nbsp;MUST<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;included&nbsp;'matrix'&nbsp;knob.<br><br>2.1<br>-&nbsp;added&nbsp;export&nbsp;axis<br><br>2.0<br>-&nbsp;mirror&nbsp;fix<br>&nbsp;&nbsp;updated&nbsp;error&nbsp;message<br>&nbsp;&nbsp;uncheck&nbsp;calculate&nbsp;vertex&nbsp;by&nbsp;default\"\nnuke.message( log )" +STARTLINE}
+ addUserKnob {26 l_VERSION l Version T 2.4}
+ addUserKnob {26 l_DATE l "Date Modified" T 2021-03-29}
+ addUserKnob {22 btn_CHANGELOG l Changelog T "log = \"2.4<br>-&nbsp;added&nbsp;Camera3&nbsp;class&nbsp;into&nbsp;detection&nbsp;list<br><br>2.3<br>-&nbsp;compatible&nbsp;with&nbsp;python3<br>-&nbsp;added&nbsp;Light3&nbsp;&&nbsp;Axis3&nbsp;class&nbsp;into&nbsp;detection&nbsp;list<br><br>2.2<br>-&nbsp;frame&nbsp;range&nbsp;added&nbsp;'current&nbsp;<br>&nbsp;&nbsp;frame'option.&nbsp;For&nbsp;1&nbsp;frame&nbsp;calculation.<br>-&nbsp;exposed&nbsp;custom&nbsp;node&nbsp;class&nbsp;data.<br>&nbsp;&nbsp;User&nbsp;can&nbsp;add&nbsp;custom&nbsp;node&nbsp;class&nbsp;<br>&nbsp;&nbsp;if&nbsp;there&nbsp;has&nbsp;special&nbsp;3D&nbsp;nodes.<br>&nbsp;&nbsp;*&nbsp;custom&nbsp;node&nbsp;class&nbsp;MUST<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;included&nbsp;'matrix'&nbsp;knob.<br><br>2.1<br>-&nbsp;added&nbsp;export&nbsp;axis<br><br>2.0<br>-&nbsp;mirror&nbsp;fix<br>&nbsp;&nbsp;updated&nbsp;error&nbsp;message<br>&nbsp;&nbsp;uncheck&nbsp;calculate&nbsp;vertex&nbsp;by&nbsp;default\"\nnuke.message( log )" +STARTLINE}
  addUserKnob {26 l_DEV l "Developed by" T "<a href='https://youtube.com/c/MJTLab'><font color='orange'>Mark Joey Tang</font></a>"}
 }
  BackdropNode {
@@ -73,7 +73,7 @@ Group {
   xpos -53
   ypos 53
  }
-set N20b40400 [stack 0]
+set Nb4369800 [stack 0]
  Output {
   name Output1
   xpos -87
@@ -88,7 +88,7 @@ set N20b40400 [stack 0]
   xpos -413
   ypos 174
  }
-push $N20b40400
+push $Nb4369800
  Dot {
   name Dot2
   xpos 80
